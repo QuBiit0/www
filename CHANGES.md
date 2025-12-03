@@ -116,7 +116,7 @@ wrangler deploy
 ```bash
 wrangler secret put GEMINI_API_KEY
 ```
-Cuando te lo pida, pega: `AIzaSyCdRyZbnc5vRneC_NS7brOLgGs9njCcT0s`
+Cuando te lo pida, pega tu API key de Gemini (mantenla segura, nunca la subas a Git)
 
 ### 4. Copiar la URL del Worker
 

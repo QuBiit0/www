@@ -27,20 +27,6 @@ npm install -g wrangler
 cd cloudflare-worker
 
 # Login en Cloudflare
-wrangler login
-
-# Desplegar
-wrangler deploy
-
-# Configurar API key de forma segura
-wrangler secret put GEMINI_API_KEY
-# Pega: AIzaSyCdRyZbnc5vRneC_NS7brOLgGs9njCcT0s
-```
-
-**IMPORTANTE:** Copia la URL que te da Wrangler. Será algo como:
-```
-https://leandro-portfolio-gemini-proxy.XXXXX.workers.dev
-```
 
 ---
 
