@@ -82,13 +82,16 @@ async def get_llm():
     
     # Defaults
     provider = db_settings.provider if db_settings else settings.MODEL_PROVIDER
-    model_name = db_settings.model_name if db_settings else "gemini-2.5-flash"
+    model_name = db_settings.model_name if db_settings else "gpt-3.5-turbo"
     api_key = db_settings.api_key if db_settings else settings.GEMINI_API_KEY
     temperature = float(db_settings.temperature) if db_settings else 0.7
+
+    print(f"DEBUG: Agent Settings - Provider: {provider}, Model: {model_name}, HasKey: {bool(api_key)}")
 
     # Check Cache
     cached_llm = get_cached_llm(provider, model_name, str(api_key), temperature)
     if cached_llm:
+        print("DEBUG: Using Cached LLM")
         return cached_llm
 
     llm = None
@@ -99,8 +102,12 @@ async def get_llm():
         llm = ChatGoogleGenerativeAI(model=model_name, google_api_key=api_key, temperature=temperature)
     
     # OpenAI Fallback
-    # OpenAI Fallback
     else:
+        # Default to a widely available model if gpt-4o fails
+        if model_name == "gpt-4o": 
+            # Check if we should fallback (optional logic, but for now just use what's passed)
+            pass
+            
         openai_kwargs = {
             "model": model_name,
             "api_key": api_key or settings.OPENAI_API_KEY,
