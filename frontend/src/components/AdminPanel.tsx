@@ -238,14 +238,34 @@ const AdminPanel: React.FC = () => {
                             )}
                         </div>
 
-                        <button
-                            type="button"
-                            onClick={handlePortfolioSave}
-                            disabled={loading}
-                            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50"
-                        >
-                            <Save size={20} /> Save Portfolio Data
-                        </button>
+                        <div className="flex gap-4">
+                            <button
+                                type="button"
+                                onClick={handlePortfolioSave}
+                                disabled={loading}
+                                className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                            >
+                                <Save size={20} /> Save Changes
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const blob = new Blob([portfolioData], { type: 'application/json' });
+                                    const url = URL.createObjectURL(blob);
+                                    const a = document.createElement('a');
+                                    a.href = url;
+                                    a.download = 'portfolio_backup.json';
+                                    document.body.appendChild(a);
+                                    a.click();
+                                    document.body.removeChild(a);
+                                    URL.revokeObjectURL(url);
+                                }}
+                                className="px-6 bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all"
+                                title="Download JSON Backup"
+                            >
+                                <Server size={20} /> Download
+                            </button>
+                        </div>
                     </div>
                 </div>
 
