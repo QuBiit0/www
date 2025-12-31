@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Lock, Cpu, Server } from 'lucide-react';
+import { Save, Lock, Cpu, Server, FileText, Download, AlertCircle } from 'lucide-react';
 
 interface Settings {
     provider: string;
@@ -26,7 +26,11 @@ const AdminPanel: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [msg, setMsg] = useState('');
 
-    const [portfolioData, setPortfolioData] = useState('');
+    // Bilingual Data States
+    const [fullPortfolioData, setFullPortfolioData] = useState<any>({});
+    const [activeTab, setActiveTab] = useState<'es' | 'en'>('es');
+    const [dataEs, setDataEs] = useState('');
+    const [dataEn, setDataEn] = useState('');
     const [jsonError, setJsonError] = useState('');
 
     useEffect(() => {
@@ -47,7 +51,18 @@ const AdminPanel: React.FC = () => {
                     api_key: settingsData.api_key || ''
                 });
                 setStats(statsData);
-                setPortfolioData(JSON.stringify(portfolioJson, null, 2));
+
+                // Handle Bilingual Data Split
+                setFullPortfolioData(portfolioJson);
+                if (portfolioJson.es || portfolioJson.en) {
+                    setDataEs(JSON.stringify(portfolioJson.es || {}, null, 2));
+                    setDataEn(JSON.stringify(portfolioJson.en || {}, null, 2));
+                } else {
+                    // Legacy Flat Data -> Default to ES, copy to EN
+                    setDataEs(JSON.stringify(portfolioJson, null, 2));
+                    setDataEn(JSON.stringify(portfolioJson, null, 2));
+                }
+
             } catch (error) {
                 console.error("Failed to load admin data", error);
             } finally {
@@ -62,7 +77,7 @@ const AdminPanel: React.FC = () => {
     const switchProvider = (provider: string) => {
         let defaultModel = '';
         if (provider === 'gemini') defaultModel = 'gemini-2.5-flash';
-        if (provider === 'openai') defaultModel = 'gpt-4o';
+        if (provider === 'openai') defaultModel = 'gpt-3.5-turbo';
 
         setSettings({
             ...settings,
@@ -77,15 +92,22 @@ const AdminPanel: React.FC = () => {
         setMsg('');
 
         try {
-            // 1. Validate JSON
-            let parsedPortfolio;
+            // 1. Validate JSONs
+            let parsedEs, parsedEn;
             try {
-                parsedPortfolio = JSON.parse(portfolioData);
+                parsedEs = JSON.parse(dataEs);
+                parsedEn = JSON.parse(dataEn);
             } catch (e) {
-                setJsonError('Invalid JSON Format - Data NOT saved');
+                setJsonError('Invalid JSON Format in one of the tabs - Data NOT saved');
                 setLoading(false);
                 return;
             }
+
+            // Construct Bilingual Payload
+            const finalPayload = {
+                es: parsedEs,
+                en: parsedEn
+            };
 
             // 2. Perform Parallel Saves
             const [settingsRes, portfolioRes] = await Promise.all([
@@ -97,7 +119,7 @@ const AdminPanel: React.FC = () => {
                 fetch('/api/portfolio', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(parsedPortfolio)
+                    body: JSON.stringify(finalPayload)
                 })
             ]);
 
@@ -119,6 +141,16 @@ const AdminPanel: React.FC = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleDownload = () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ es: JSON.parse(dataEs), en: JSON.parse(dataEn) }, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "portfolio_backup.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
     };
 
     return (
@@ -239,66 +271,76 @@ const AdminPanel: React.FC = () => {
                     </div>
 
                     {/* Right Column: Portfolio Data Editor */}
-                    <div className="bg-slate-800/50 p-8 rounded-xl border border-slate-700 flex flex-col h-full">
-                        <h2 className="text-xl font-bold flex items-center gap-2 mb-6">
-                            <Lock size={20} className="text-green-400" /> Portfolio Data (JSON)
-                        </h2>
+                    <div className="space-y-6 bg-slate-800/50 p-8 rounded-xl border border-slate-700 h-full flex flex-col">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-xl font-bold flex items-center gap-2">
+                                <FileText size={20} className="text-green-400" /> Portfolio Data (JSON)
+                            </h2>
+                            <button
+                                onClick={handleDownload}
+                                className="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-slate-300 transition-colors flex items-center gap-1"
+                            >
+                                <Download size={14} /> Backup
+                            </button>
+                        </div>
 
-                        <div className="flex-1 relative mb-4">
+                        {/* Language Tabs */}
+                        <div className="flex gap-2 mb-2 p-1 bg-slate-900/50 rounded-lg w-fit">
+                            <button
+                                onClick={() => setActiveTab('es')}
+                                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'es' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                            >
+                                🇪🇸 Español
+                            </button>
+                            <button
+                                onClick={() => setActiveTab('en')}
+                                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'en' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                            >
+                                🇺🇸 English
+                            </button>
+                        </div>
+
+                        <div className="flex-1 relative">
                             <textarea
-                                value={portfolioData}
-                                onChange={(e) => setPortfolioData(e.target.value)}
-                                className="w-full h-[500px] bg-slate-900 border border-slate-700 rounded-lg p-4 font-mono text-sm focus:ring-2 focus:ring-green-500 outline-none resize-none"
+                                value={activeTab === 'es' ? dataEs : dataEn}
+                                onChange={e => activeTab === 'es' ? setDataEs(e.target.value) : setDataEn(e.target.value)}
+                                className="w-full h-96 bg-slate-900 border border-slate-700 rounded-lg p-4 font-mono text-sm focus:ring-2 focus:ring-green-500 outline-none resize-none"
                                 spellCheck="false"
                             />
                             {jsonError && (
-                                <div className="absolute bottom-4 right-4 bg-red-500/90 text-white px-3 py-1 rounded-md text-sm">
+                                <div className="absolute bottom-4 right-4 bg-red-500/90 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2 shadow-lg backdrop-blur-sm">
+                                    <AlertCircle size={16} />
                                     {jsonError}
                                 </div>
                             )}
                         </div>
-
-                        <button
-                            type="button"
-                            onClick={() => {
-                                const blob = new Blob([portfolioData], { type: 'application/json' });
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = 'portfolio_backup.json';
-                                document.body.appendChild(a);
-                                a.click();
-                                document.body.removeChild(a);
-                                URL.revokeObjectURL(url);
-                            }}
-                            className="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-all"
-                            title="Download JSON Backup"
-                        >
-                            <Server size={20} /> Download Backup
-                        </button>
+                        <p className="text-xs text-slate-500 mt-2">
+                            Editing: {activeTab === 'es' ? 'Spanish' : 'English'} Version. Both versions are saved together.
+                        </p>
                     </div>
                 </div>
-
-                {/* Global Save Button - Floating or Fixed at Bottom */}
-                <div className="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-lg border-t border-slate-700 p-4 flex justify-center z-40">
-                    <button
-                        type="button"
-                        onClick={handleGlobalSave}
-                        disabled={loading}
-                        className="w-full max-w-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-lg font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-3 transition-all disabled:opacity-50 transform hover:scale-[1.01]"
-                    >
-                        {loading ? 'Saving Changes...' : <><Save size={24} /> SAVE ALL CHANGES</>}
-                    </button>
-                </div>
-
-                {/* Global Message Toast */}
-                {msg && (
-                    <div className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-xl ${msg.includes('Error') ? 'bg-red-500 text-white' : 'bg-green-500 text-white'} transition-all z-50 animate-bounce`}>
-                        {msg}
-                    </div>
-                )}
             </div>
+
+            {/* Global Save Button - Floating or Fixed at Bottom */}
+            <div className="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-lg border-t border-slate-700 p-4 flex justify-center z-40">
+                <button
+                    type="button"
+                    onClick={handleGlobalSave}
+                    disabled={loading}
+                    className="w-full max-w-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-lg font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-3 transition-all disabled:opacity-50 transform hover:scale-[1.01]"
+                >
+                    {loading ? 'Saving Changes...' : <><Save size={24} /> SAVE ALL CHANGES</>}
+                </button>
+            </div>
+
+            {/* Global Message Toast */}
+            {msg && (
+                <div className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-xl ${msg.includes('Error') ? 'bg-red-500 text-white' : 'bg-green-500 text-white'} transition-all z-50 animate-bounce`}>
+                    {msg}
+                </div>
+            )}
         </div>
+
     );
 };
 

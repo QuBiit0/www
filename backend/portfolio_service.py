@@ -12,12 +12,24 @@ async def get_portfolio_data(db: AsyncSession) -> dict:
     record = result.scalars().first()
     
     if record and record.content:
-        return json.loads(record.content)
-    return {}
+        data = json.loads(record.content)
+        # Migration: Ensure Bilingual Structure
+        if "es" not in data and "en" not in data:
+            # Assume current data is Spanish, copy to both to start
+            print("Migrating flat portfolio data to bilingual structure...")
+            new_structure = {
+                "es": data,
+                "en": data # Duplicate as placeholder
+            }
+            # Optional: Update DB immediately with new structure
+            return new_structure
+        return data
+    return {"es": {}, "en": {}}
 
 async def save_portfolio_data(db: AsyncSession, data: dict) -> bool:
     """Saves new portfolio data version to DB."""
     try:
+        # data should already be {"es": ..., "en": ...} coming from admin
         content_str = json.dumps(data, ensure_ascii=False)
         new_record = PortfolioData(content=content_str, is_active=True)
         db.add(new_record)

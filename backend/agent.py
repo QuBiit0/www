@@ -15,34 +15,39 @@ import json
 
 # --- Tools Definition ---
 @tool
-async def get_portfolio_info(query: str) -> str:
+async def get_portfolio_info(query: str, language: str = "es") -> str:
     """Useful for answering questions about Leandro's professional experience, skills, projects, or resume.
     If the query is specific (e.g. 'skills', 'experience'), it will return that section.
     Otherwise it returns the full profile context.
+    ALWAYS use 'es' for Spanish queries and 'en' for English queries.
     """
     if "db_test_fail" in query: # Forced failure for testing
          return "Error: Could not load portfolio data."
 
     async with AsyncSessionLocal() as session:
-        data = await get_portfolio_data(session)
+        full_data = await get_portfolio_data(session)
     
-    if not data:
+    if not full_data:
         return "Error: Could not load portfolio data."
+
+    # Handle Bilingual Structure
+    # If data has 'es' key, it's the new structure. Otherwise treat as flat (legacy fallback)
+    data = full_data.get(language, full_data.get("es", full_data)) if "es" in full_data else full_data
 
     query_lower = query.lower()
     
     # Simple semantic routing based on keywords
     if "skill" in query_lower or "technolog" in query_lower or "stack" in query_lower:
-        return f"Skills: {json.dumps(data.get('skills', []), indent=2)}"
+        return f"Skills ({language}): {json.dumps(data.get('skills', []), indent=2)}"
     
     if "experience" in query_lower or "work" in query_lower or "job" in query_lower or "history" in query_lower:
-        return f"Experience: {json.dumps(data.get('experience', []), indent=2)}"
+        return f"Experience ({language}): {json.dumps(data.get('experience', []), indent=2)}"
         
     if "education" in query_lower or "stud" in query_lower or "degree" in query_lower:
-        return f"Education: {json.dumps(data.get('education', []), indent=2)}"
+        return f"Education ({language}): {json.dumps(data.get('education', []), indent=2)}"
         
     if "project" in query_lower or "app" in query_lower:
-        return f"Projects: {json.dumps(data.get('projects', []), indent=2)}"
+        return f"Projects ({language}): {json.dumps(data.get('projects', []), indent=2)}"
         
     if "contact" in query_lower or "email" in query_lower or "phone" in query_lower:
         return f"Contact Info: {json.dumps(data.get('personal_info', {}).get('contact', {}), indent=2)}"
@@ -53,7 +58,7 @@ async def get_portfolio_info(query: str) -> str:
         "top_skills": data.get("skills")[:5] if data.get("skills") else [],
         "latest_role": data.get("experience")[0] if data.get("experience") else {}
     }
-    return f"Context: {json.dumps(summary, indent=2)}"
+    return f"Context ({language}): {json.dumps(summary, indent=2)}"
 
 @tool
 def contact_leandro(subject: str, message: str, contact_info: str = "Not provided") -> str:
