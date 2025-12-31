@@ -1,203 +1,80 @@
-# 🚀 Leandro Alvarez - Portfolio con IA
+# Leandro Alvarez - AI Enhanced Portfolio
 
-Portfolio personal con asistente de IA integrado usando Gemini, desplegado en GitHub Pages con API key segura mediante Cloudflare Workers.
+![Status](https://img.shields.io/badge/Status-Active-success)
+![Docker](https://img.shields.io/badge/Docker-Enabled-blue)
+![Python](https://img.shields.io/badge/Backend-FastAPI-green)
+![React](https://img.shields.io/badge/Frontend-React-cyan)
 
-## 🔐 Configuración de Seguridad
+Portafolio personal interactivo de nueva generación que integra un agente de Inteligencia Artificial real para interactuar con los visitantes. No es solo un chatbot con respuestas predefinidas, es un agente LangChain capaz de razonar, buscar información en el perfil profesional y responder contextualmente.
 
-Este proyecto usa **Cloudflare Workers** como proxy seguro para mantener la API key de Gemini protegida. La clave **NUNCA** se expone en el frontend.
+## 🚀 Características
 
-### Arquitectura:
-```
-Frontend (GitHub Pages) 
-    ↓
-Cloudflare Worker (con API key segura)
-    ↓
-Google Gemini API
-```
+- **AI Agent Real**: Potenciado por Google Gemini (o OpenAI GPT-4), capaz de entender consultas complejas sobre experiencia, skills y proyectos.
+- **Datos Estructurados**: El agente consulta una base de conocimiento JSON actualizada dinámicamente.
+- **Panel de Administración**: Interfaz para cambiar el modelo de IA, configurar API Keys y ver estadísticas de uso sin redeplegar.
+- **Persistencia**: Historial de chat guardado en PostgreSQL.
+- **Dockerizado**: Listo para desplegar en cualquier servidor con Docker Compose.
 
-## 📋 Requisitos Previos
+## 🛠️ Stack Tecnológico
 
-1. **Node.js** (v16 o superior)
-2. **Cuenta de Cloudflare** (gratuita): https://dash.cloudflare.com/sign-up
-3. **API Key de Gemini**: https://aistudio.google.com/app/apikey
+- **Frontend**: React, TypeScript, TailwindCSS, Vite.
+- **Backend**: Python 3.11, FastAPI, SQLAlchemy (Async).
+- **IA**: LangChain, Google Generative AI, OpenAI.
+- **Base de Datos**: PostgreSQL 16.
+- **Infraestructura**: Docker, Docker Compose, Nginx.
 
-## 🛠️ Configuración Paso a Paso
+## 🏁 Inicio Rápido (Local)
 
-### 1. Configurar el Cloudflare Worker
+### Prerrequisitos
+- Docker y Docker Compose instalados.
+- Una API Key de Google Gemini (Gratis) o OpenAI.
 
-```bash
-# Instalar Wrangler (CLI de Cloudflare)
-npm install -g wrangler
+### Instalación
 
-# Ir a la carpeta del worker
-cd cloudflare-worker
-
-# Autenticarse con Cloudflare
-wrangler login
-
-# Configurar la API key de Gemini (se almacena de forma segura)
-wrangler secret put GEMINI_API_KEY
-# Cuando te lo pida, pega tu API key de Gemini
-
-# Desplegar el worker
-wrangler deploy
-```
-
-Copia la URL que te da Wrangler (algo como `https://leandro-portfolio-gemini-proxy.TU-SUBDOMAIN.workers.dev`)
-
-### 2. Configurar el Frontend
-
-```bash
-# Volver a la raíz del proyecto
-cd ..
-
-# Crear archivo .env.local
-cp .env.example .env.local
-
-# Editar .env.local y pegar tu URL del worker
-# VITE_WORKER_URL=https://leandro-portfolio-gemini-proxy.TU-SUBDOMAIN.workers.dev
-```
-
-### 3. Desarrollo Local
-
-```bash
-# Instalar dependencias
-npm install
-
-# Ejecutar en modo desarrollo
-npm run dev
-```
-
-El sitio estará disponible en `http://localhost:3000`
-
-### 4. Desplegar a GitHub Pages
-
-```bash
-# Asegúrate de que todos los cambios estén committeados
-git add .
-git commit -m "Setup Cloudflare Worker proxy"
-git push origin main
-```
-
-GitHub Actions automáticamente construirá y desplegará tu sitio.
-
-## 🎨 Personalización
-
-### Modificar el System Instruction del Chatbot
-
-Edita el archivo `cloudflare-worker/worker.js` y busca la sección `systemInstruction`, o configura un secret:
-
-```bash
-cd cloudflare-worker
-wrangler secret put SYSTEM_INSTRUCTION
-# Pega tu instrucción personalizada
-wrangler deploy
-```
-
-### Cambiar el Nombre del Worker
-
-Edita `cloudflare-worker/wrangler.toml`:
-```toml
-name = "tu-nombre-personalizado"
-```
-
-## 🔒 Seguridad
-
-### ✅ Medidas Implementadas:
-- API key almacenada como secret en Cloudflare (nunca en el código)
-- Cloudflare Worker actúa como proxy seguro
-- CORS configurado para aceptar solo tu dominio
-
-### 📌 Mejoras Recomendadas:
-
-1. **Restringir CORS** (después del despliegue):
-   
-   En `cloudflare-worker/worker.js`, cambia:
-   ```javascript
-   'Access-Control-Allow-Origin': '*'
-   ```
-   Por:
-   ```javascript
-   'Access-Control-Allow-Origin': 'https://leandroalvarez.com.ar'
-   ```
-
-2. **Rate Limiting**: Considera agregar limitación de velocidad en el worker.
-
-## 📊 Monitoreo
-
-Ver estadísticas del Worker:
-```bash
-cd cloudflare-worker
-
-# Ver logs en tiempo real
-wrangler tail
-
-# Ver métricas en el dashboard
-# https://dash.cloudflare.com/
-```
-
-## 🆘 Troubleshooting
-
-### El chatbot no responde
-
-1. Verifica que el worker esté desplegado:
+1. **Clonar el repositorio**:
    ```bash
-   cd cloudflare-worker
-   wrangler deploy
+   git clone https://github.com/tu-usuario/portafolio-ai.git
+   cd portafolio-ai
    ```
 
-2. Verifica que la API key esté configurada:
+2. **Configurar Variables de Entorno**:
+   Crea un archivo `.env` en la raíz (puedes copiar `.env.example` si existe, o usar este template):
+   ```env
+   # .env
+   GEMINI_API_KEY=tu_api_key_aqui
+   OPENAI_API_KEY=tu_openai_key_opcional
+   DATABASE_URL=postgresql+asyncpg://user:password@db:5432/portfolio_db
+   ```
+
+3. **Iniciar con Docker Compose**:
    ```bash
-   wrangler secret list
-   ```
-   Deberías ver `GEMINI_API_KEY` en la lista.
-
-3. Verifica los logs del worker:
-   ```bash
-   wrangler tail
+   docker-compose -f docker-compose.dev.yml up --build
    ```
 
-4. Verifica que la URL del worker esté correctamente configurada en `.env.local`
+4. **Acceder**:
+   - **Frontend**: http://localhost:3000
+   - **Backend API**: http://localhost:8000/docs
+   - **Admin Panel**: http://localhost:3000/admin (Configura tu LLM aquí si no pusiste env vars)
 
-### Error de CORS
+## 📦 Deployment (Producción)
 
-Si ves errores de CORS en la consola del navegador, verifica que el worker tenga los headers CORS correctos en `worker.js`.
+Este proyecto está optimizado para despliegue con **Dokploy** o cualquier VPS con Docker.
 
-### El build falla en GitHub Actions
+1. Asegúrate de usar `docker-compose-prod.yml`.
+2. Configura las variables de entorno en tu panel de despliegue.
+3. El contenedor de frontend utiliza Nginx para servir la aplicación optimizada.
 
-Asegúrate de que:
-- `package.json` tenga todas las dependencias necesarias
-- El repositorio tenga GitHub Pages habilitado (Settings → Pages)
-- La rama `gh-pages` exista después del primer deploy
+Ver [DEPLOYMENT.md](DEPLOYMENT.md) para guía detallada.
 
-## 📦 Scripts Disponibles
+## 📖 Documentación
 
-```bash
-npm run dev      # Desarrollo local
-npm run build    # Construir para producción
-npm run preview  # Preview del build de producción
-```
+- [Arquitectura del Sistema](ARCHITECTURE.md)
+- [Deployment Grid](DEPLOYMENT.md)
 
-## 💰 Costos
+## 🤝 Contacto
 
-**Plan Gratuito de Cloudflare Workers:**
-- ✅ 100,000 requests/día
-- ✅ Sin costo
-- ✅ Más que suficiente para un portfolio personal
-
-**GitHub Pages:**
-- ✅ Completamente gratuito
-
-## 🔗 Enlaces Útiles
-
-- [Documentación de Cloudflare Workers](https://developers.cloudflare.com/workers/)
-- [Gemini API Docs](https://ai.google.dev/docs)
-- [GitHub Pages](https://pages.github.com/)
-
-## 📝 Licencia
-
-MIT
+- **Email**: info@leandroalvarez.com.ar
+- **LinkedIn**: [Leandro Alvarez](https://www.linkedin.com/in/leandro-alvarez)
 
 ---
-
-Hecho con ❤️ por Leandro Alvarez
+Hecho con ❤️ e Inteligencia Artificial.

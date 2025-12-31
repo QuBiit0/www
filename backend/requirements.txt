@@ -1,0 +1,15 @@
+fastapi>=0.109.0
+uvicorn>=0.27.0
+pydantic>=2.6.0
+pydantic-settings>=2.1.0
+langchain==0.1.17
+langchain-openai==0.1.6
+langchain-google-genai==1.0.3
+langchain-community==0.0.36
+httpx>=0.26.0
+python-dotenv>=1.0.1
+asyncpg>=0.29.0
+sqlalchemy>=2.0.25
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+abcio>=0.1.0
