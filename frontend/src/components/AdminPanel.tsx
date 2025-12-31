@@ -5,6 +5,7 @@ interface Settings {
     provider: string;
     model_name: string;
     api_key: string;
+    base_url?: string;
     temperature: number;
 }
 
@@ -13,6 +14,7 @@ const AdminPanel: React.FC = () => {
         provider: 'gemini',
         model_name: 'gemini-2.5-flash',
         api_key: '',
+        base_url: '',
         temperature: 0.7
     });
     const [stats, setStats] = useState({
@@ -56,60 +58,71 @@ const AdminPanel: React.FC = () => {
         fetchData();
     }, []);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            const res = await fetch('/api/settings/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(settings)
-            });
-            if (res.ok) {
-                setMsg('Configuration updated successfully!');
-                setTimeout(() => setMsg(''), 3000);
-            } else {
-                setMsg('Error updating configuration.');
-            }
-        } catch (err) {
-            setMsg('Network error.');
-        }
-        setLoading(false);
+    // Helper to switch provider and defaults
+    const switchProvider = (provider: string) => {
+        let defaultModel = '';
+        if (provider === 'gemini') defaultModel = 'gemini-2.5-flash';
+        if (provider === 'openai') defaultModel = 'gpt-4o';
+
+        setSettings({
+            ...settings,
+            provider,
+            model_name: defaultModel
+        });
     };
 
-    const handlePortfolioSave = async () => {
+    const handleGlobalSave = async () => {
         setJsonError('');
         setLoading(true);
+        setMsg('');
+
         try {
-            let parsed;
+            // 1. Validate JSON
+            let parsedPortfolio;
             try {
-                parsed = JSON.parse(portfolioData);
+                parsedPortfolio = JSON.parse(portfolioData);
             } catch (e) {
-                setJsonError('Invalid JSON Format');
+                setJsonError('Invalid JSON Format - Data NOT saved');
                 setLoading(false);
                 return;
             }
 
-            const res = await fetch('/api/portfolio', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(parsed)
-            });
+            // 2. Perform Parallel Saves
+            const [settingsRes, portfolioRes] = await Promise.all([
+                fetch('/api/settings/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                }),
+                fetch('/api/portfolio', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(parsedPortfolio)
+                })
+            ]);
 
-            if (res.ok) {
-                setMsg('Portfolio Data saved!');
-                setTimeout(() => setMsg(''), 3000);
+            const settingsOk = settingsRes.ok;
+            const portfolioOk = portfolioRes.ok;
+
+            if (settingsOk && portfolioOk) {
+                setMsg('All changes saved successfully! 🚀');
+                setTimeout(() => setMsg(''), 4000);
             } else {
-                setMsg('Error saving portfolio data');
+                let errorMsg = 'Error saving: ';
+                if (!settingsOk) errorMsg += 'Settings ';
+                if (!portfolioOk) errorMsg += 'Portfolio Data';
+                setMsg(errorMsg);
             }
+
         } catch (err) {
-            setMsg('Network error while saving portfolio.');
+            setMsg('Network error while saving.');
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (
-        <div className="min-h-screen bg-slate-900 text-white p-8 md:p-12">
+        <div className="min-h-screen bg-slate-900 text-white p-8 md:p-12 pb-24">
             <div className="max-w-4xl mx-auto">
                 <div className="flex items-center gap-4 mb-8 pb-8 border-b border-slate-700">
                     <div className="p-3 bg-indigo-600 rounded-lg">
@@ -140,9 +153,9 @@ const AdminPanel: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* Left Column: AI Config */}
-                    <form onSubmit={handleSubmit} className="space-y-6 bg-slate-800/50 p-8 rounded-xl border border-slate-700 h-fit">
+                    <div className="space-y-6 bg-slate-800/50 p-8 rounded-xl border border-slate-700 h-fit">
                         <h2 className="text-xl font-bold flex items-center gap-2 mb-6">
                             <Cpu size={20} className="text-indigo-400" /> AI Brain Configuration
                         </h2>
@@ -153,7 +166,7 @@ const AdminPanel: React.FC = () => {
                             <div className="grid grid-cols-2 gap-4">
                                 <button
                                     type="button"
-                                    onClick={() => setSettings({ ...settings, provider: 'gemini' })}
+                                    onClick={() => switchProvider('gemini')}
                                     className={`p-4 rounded-lg border flex flex-col items-center gap-2 transition-all ${settings.provider === 'gemini' ? 'bg-indigo-600 border-indigo-500' : 'bg-slate-900 border-slate-700 hover:border-slate-600'}`}
                                 >
                                     <Cpu size={24} />
@@ -161,7 +174,7 @@ const AdminPanel: React.FC = () => {
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => setSettings({ ...settings, provider: 'openai' })}
+                                    onClick={() => switchProvider('openai')}
                                     className={`p-4 rounded-lg border flex flex-col items-center gap-2 transition-all ${settings.provider === 'openai' ? 'bg-green-600 border-green-500' : 'bg-slate-900 border-slate-700 hover:border-slate-600'}`}
                                 >
                                     <Cpu size={24} />
@@ -177,7 +190,7 @@ const AdminPanel: React.FC = () => {
                                 type="text"
                                 value={settings.model_name}
                                 onChange={e => setSettings({ ...settings, model_name: e.target.value })}
-                                placeholder="e.g., gemini-2.5-flash"
+                                placeholder={settings.provider === 'openai' ? "gpt-4o" : "gemini-2.5-flash"}
                                 className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none"
                             />
                         </div>
@@ -197,6 +210,21 @@ const AdminPanel: React.FC = () => {
                             </div>
                         </div>
 
+                        {/* Base URL (Conditional for OpenAI) */}
+                        {settings.provider === 'openai' && (
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Base URL (Optional)</label>
+                                <input
+                                    type="text"
+                                    value={settings.base_url || ''}
+                                    onChange={e => setSettings({ ...settings, base_url: e.target.value })}
+                                    placeholder="https://api.openai.com/v1"
+                                    className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm"
+                                />
+                                <p className="text-xs text-slate-500 mt-1">Useful for compatible APIs (e.g. Ollama, LM Studio)</p>
+                            </div>
+                        )}
+
                         {/* Temperature */}
                         <div>
                             <label className="block text-sm font-medium mb-2">Temperature: {settings.temperature}</label>
@@ -208,15 +236,7 @@ const AdminPanel: React.FC = () => {
                                 className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer"
                             />
                         </div>
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50"
-                        >
-                            {loading && settings.api_key !== '' ? 'Saving...' : <><Save size={20} /> Save AI Config</>}
-                        </button>
-                    </form>
+                    </div>
 
                     {/* Right Column: Portfolio Data Editor */}
                     <div className="bg-slate-800/50 p-8 rounded-xl border border-slate-700 flex flex-col h-full">
@@ -238,40 +258,42 @@ const AdminPanel: React.FC = () => {
                             )}
                         </div>
 
-                        <div className="flex gap-4">
-                            <button
-                                type="button"
-                                onClick={handlePortfolioSave}
-                                disabled={loading}
-                                className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50"
-                            >
-                                <Save size={20} /> Save Changes
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    const blob = new Blob([portfolioData], { type: 'application/json' });
-                                    const url = URL.createObjectURL(blob);
-                                    const a = document.createElement('a');
-                                    a.href = url;
-                                    a.download = 'portfolio_backup.json';
-                                    document.body.appendChild(a);
-                                    a.click();
-                                    document.body.removeChild(a);
-                                    URL.revokeObjectURL(url);
-                                }}
-                                className="px-6 bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all"
-                                title="Download JSON Backup"
-                            >
-                                <Server size={20} /> Download
-                            </button>
-                        </div>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const blob = new Blob([portfolioData], { type: 'application/json' });
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = 'portfolio_backup.json';
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                            }}
+                            className="w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-all"
+                            title="Download JSON Backup"
+                        >
+                            <Server size={20} /> Download Backup
+                        </button>
                     </div>
+                </div>
+
+                {/* Global Save Button - Floating or Fixed at Bottom */}
+                <div className="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-lg border-t border-slate-700 p-4 flex justify-center z-40">
+                    <button
+                        type="button"
+                        onClick={handleGlobalSave}
+                        disabled={loading}
+                        className="w-full max-w-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-lg font-bold py-4 rounded-xl shadow-lg flex items-center justify-center gap-3 transition-all disabled:opacity-50 transform hover:scale-[1.01]"
+                    >
+                        {loading ? 'Saving Changes...' : <><Save size={24} /> SAVE ALL CHANGES</>}
+                    </button>
                 </div>
 
                 {/* Global Message Toast */}
                 {msg && (
-                    <div className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-xl ${msg.includes('Error') ? 'bg-red-500 text-white' : 'bg-green-500 text-white'} transition-all z-50`}>
+                    <div className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-lg shadow-xl ${msg.includes('Error') ? 'bg-red-500 text-white' : 'bg-green-500 text-white'} transition-all z-50 animate-bounce`}>
                         {msg}
                     </div>
                 )}

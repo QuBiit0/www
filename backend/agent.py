@@ -99,8 +99,19 @@ async def get_llm():
         llm = ChatGoogleGenerativeAI(model=model_name, google_api_key=api_key, temperature=temperature)
     
     # OpenAI Fallback
+    # OpenAI Fallback
     else:
-        llm = ChatOpenAI(model=model_name, api_key=api_key or settings.OPENAI_API_KEY, temperature=temperature)
+        openai_kwargs = {
+            "model": model_name,
+            "api_key": api_key or settings.OPENAI_API_KEY,
+            "temperature": temperature
+        }
+        
+        # Add base_url if present
+        if db_settings and db_settings.base_url:
+            openai_kwargs["base_url"] = db_settings.base_url
+            
+        llm = ChatOpenAI(**openai_kwargs)
     
     # Cache the new instance
     if llm:

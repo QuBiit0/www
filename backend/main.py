@@ -62,6 +62,34 @@ async def update_portfolio(data: dict, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Failed to save portfolio data")
     return {"status": "updated", "message": "Portfolio data saved to Database"}
 
+from models import ChatMessage
+from sqlalchemy import func, select
+
+@app.get("/api/stats")
+async def get_stats(db: AsyncSession = Depends(get_db)):
+    try:
+        total_msgs = await db.scalar(select(func.count(ChatMessage.id)))
+        unique_sessions = await db.scalar(select(func.count(func.distinct(ChatMessage.session_id))))
+        
+        # Check LLM connectivity (basic check)
+        from settings import get_settings
+        settings = get_settings()
+        provider = settings.MODEL_PROVIDER
+        
+        return {
+            "total_messages": total_msgs or 0,
+            "active_sessions": unique_sessions or 0,
+            "system_status": "Operational",
+            "current_provider": provider
+        }
+    except Exception as e:
+         return {
+            "total_messages": 0,
+            "active_sessions": 0,
+            "system_status": "Error",
+            "error": str(e)
+        }
+
 
 @app.post("/api/chat")
 async def chat_endpoint(request: ChatRequest, db: AsyncSession = Depends(get_db)):

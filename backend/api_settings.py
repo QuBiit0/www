@@ -11,6 +11,7 @@ class SettingsSchema(BaseModel):
     provider: str
     model_name: str
     api_key: str | None = None
+    base_url: str | None = None
     temperature: float | None = 0.7
 
 @router.get("/", response_model=SettingsSchema)
@@ -24,6 +25,7 @@ async def get_settings(db: AsyncSession = Depends(get_db)):
             provider="gemini",
             model_name="gemini-2.5-flash-lite",
             api_key="",
+            base_url="",
             temperature=0.7
         )
     return settings
@@ -41,6 +43,7 @@ async def update_settings(new_settings: SettingsSchema, db: AsyncSession = Depen
     settings.model_name = new_settings.model_name
     if new_settings.api_key:
         settings.api_key = new_settings.api_key
+    settings.base_url = new_settings.base_url
     settings.temperature = str(new_settings.temperature)
     
     await db.commit()
