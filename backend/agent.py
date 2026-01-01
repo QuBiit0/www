@@ -259,7 +259,13 @@ async def process_message(message: str, history: list = []):
 {{portfolio_context}}
         </context_data>
         <cv_knowledge>
-            <instruction>The following text is extracted directly from your PDF CVs. Use this to answer specific details (exact dates, older jobs) not found in the JSON above.</instruction>
+            <instruction>
+                The following text is extracted directly from your PDF CVs. 
+                STRICT RULE: Use ONLY the information present below. 
+                - Do NOT invent dates, job titles, or companies. 
+                - If the text below is missing specific dates (e.g. only says '2023'), do NOT make up months. 
+                - If a detail is missing, state clearly: "My CV document doesn't list that specific detail."
+            </instruction>
             <text>
 {{pdf_context}}
             </text>
