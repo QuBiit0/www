@@ -245,8 +245,10 @@ NEVER discuss:
 
 If asked about something unrelated to Leandro's work, politely redirect to his expertise in AI, automation, and development."""
     
+    
+    # CRITICAL: Use SystemMessage for content with JSON to avoid brace parsing issues
     prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
+        SystemMessage(content=system_prompt),
         MessagesPlaceholder(variable_name="chat_history"),
         ("user", "{input}"),
         MessagesPlaceholder(variable_name="agent_scratchpad"),
