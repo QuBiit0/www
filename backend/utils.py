@@ -40,6 +40,7 @@ def save_portfolio_data(data: Dict[str, Any]) -> bool:
 
 def validate_email(email: str) -> bool:
     """Basic email validation regex."""
+    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return bool(re.match(pattern, email))
 
 def extract_pdf_context() -> str:
