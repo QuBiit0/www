@@ -286,14 +286,24 @@ async def process_message(message: str, history: list = []):
         agent=agent, 
         tools=tools, 
         verbose=True,
-        max_iterations=5,  # Prevent infinite loops
-        handle_parsing_errors=True,  # Graceful error handling
+        max_iterations=5,
+        handle_parsing_errors=True,
         return_intermediate_steps=False
     )
 
-    result = await agent_executor.ainvoke({
-        "input": message,
-        "chat_history": history
-    })
-    
-    return result["output"]
+    try:
+        result = await agent_executor.ainvoke({
+            "input": message,
+            "chat_history": history
+        })
+        
+        return result["output"]
+    except Exception as e:
+        import traceback
+        print(f"=== AGENT ERROR ===")
+        print(f"Error Type: {type(e).__name__}")
+        print(f"Error Message: {str(e)}")
+        print(f"Traceback:")
+        traceback.print_exc()
+        print(f"==================")
+        raise  # Re-raise to let main.py handle it
