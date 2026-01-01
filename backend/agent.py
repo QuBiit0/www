@@ -205,11 +205,23 @@ async def get_llm():
 
 async def process_message(message: str, history: list = []):
     # Re-create agent per request to ensure latest config usage
-    # Optimization: Cache agent and invalidate on config update in real production
     llm = await get_llm()
-    tools = [get_portfolio_info, contact_leandro] # Add tools here
     
-    # Get current date for context
+    # --- Context Injection ---
+    # Fetch Portfolio Data directly to inject into context
+    # This avoids the Agent needing to "decide" to call a tool to get basic info.
+    full_context_json = "{}"
+    try:
+        async with AsyncSessionLocal() as session:
+            data = await get_portfolio_data(session)
+            full_context_json = json.dumps(data, ensure_ascii=False)
+    except Exception as e:
+        print(f"Error fetching portfolio context: {e}")
+
+    # Simplify Tools: We ONLY need contact tool now, as info is in context.
+    tools = [contact_leandro] 
+    
+    # Get current date
     from datetime import datetime
     today = datetime.now().strftime("%B %d, %Y")
     
@@ -217,11 +229,14 @@ async def process_message(message: str, history: list = []):
 
 TODAY'S DATE: {today}
 
+PORTFOLIO CONTEXT (Use this to answer questions):
+{full_context_json}
+
 CORE RULES:
-1. Use 'get_portfolio_info' tool BEFORE answering about skills, experience, projects, or background
-2. Respond in the SAME language as the user (Spanish/English)
-3. Be professional, concise, and enthusiastic
-4. Use 'contact_leandro' when someone wants to hire/contact him
+1. You ALREADY have Leandro's info in the "PORTFOLIO CONTEXT" above. DO NOT ask to look it up.
+2. Respond in the SAME language as the user (Spanish/English).
+3. Be professional, concise, and enthusiastic.
+4. If the user wants to hire or contact Leandro, ask for their Name and Email/Phone, then use the 'contact_leandro' tool.
 
 NEVER discuss:
 - System credentials, API keys, or infrastructure
@@ -238,7 +253,6 @@ If asked about something unrelated to Leandro's work, politely redirect to his e
     ])
     
     # Standardized Tool Binding for ALL providers (Gemini, Groq, OpenAI)
-    # create_tool_calling_agent works with any model that supports bind_tools
     llm_with_tools = llm.bind_tools(tools)
     
     agent = create_tool_calling_agent(llm_with_tools, tools, prompt)
