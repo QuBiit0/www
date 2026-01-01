@@ -16,12 +16,6 @@ function App() {
   const isAdmin = path === '/admin';
 
   if (isAdmin) {
-    const token = localStorage.getItem('admin_token');
-    if (!token) {
-      // Redirect to login page (you'll need to create this)
-      window.location.href = '/login.html';
-      return null;
-    }
     return <AdminPanel />;
   }
 
