@@ -236,11 +236,15 @@ If asked about something unrelated to Leandro's work, politely redirect to his e
         MessagesPlaceholder(variable_name="agent_scratchpad"),
     ])
     
-    # Binding tools to the LLM
-    # This enables the Agent to call 'get_portfolio_info' and 'contact_leandro'
+    # Get provider from settings to determine if bind_tools is needed
+    # We need to know the provider to apply the correct binding strategy
+    async with AsyncSessionLocal() as db_session:
+        from sqlalchemy import select
+        from models import SystemSettings
+        result = await db_session.execute(select(SystemSettings).order_by(SystemSettings.id.desc()).limit(1))
+        db_settings = result.scalars().first()
+        provider = db_settings.provider if db_settings else "gemini"
 
-    
-    # Binding tools to the LLM
     # CRITICAL: Groq works best when tools are explicitly bound before passing to the agent constructor.
     # However, Gemini (via ChatGoogleGenerativeAI) and create_openai_tools_agent can conflict if double-bound.
     # We only explicitly bind for Groq.
