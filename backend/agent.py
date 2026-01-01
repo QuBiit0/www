@@ -28,7 +28,7 @@ async def get_portfolio_info(query: str, language: str = "es") -> str:
         full_data = await get_portfolio_data(session)
     
     if not full_data:
-        return "Error: Could not load portfolio data."
+        return "No portfolio data configured yet. Please ask the admin to add content in the Admin Panel."
 
     # Handle Bilingual Structure
     # If data has 'es' key, it's the new structure. Otherwise treat as flat (legacy fallback)
@@ -278,7 +278,14 @@ async def process_message(message: str, history: list = []):
     ])
     
     agent = create_openai_tools_agent(llm, tools, prompt)
-    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+    agent_executor = AgentExecutor(
+        agent=agent, 
+        tools=tools, 
+        verbose=True,
+        max_iterations=5,  # Prevent infinite loops
+        handle_parsing_errors=True,  # Graceful error handling
+        return_intermediate_steps=False
+    )
 
     result = await agent_executor.ainvoke({
         "input": message,
