@@ -127,13 +127,16 @@ const AdminPanel: React.FC = () => {
             try {
                 const [settingsRes, statsRes, portfolioRes, leadsRes] = await Promise.all([
                     fetch('/api/settings/', {
+                        cache: 'no-store',
                         headers: { 'Authorization': `Bearer ${localStorage.getItem('admin_token')}` }
                     }),
                     fetch('/api/stats', {
+                        cache: 'no-store',
                         headers: { 'Authorization': `Bearer ${localStorage.getItem('admin_token')}` }
                     }),
-                    fetch('/api/portfolio'),
+                    fetch('/api/portfolio', { cache: 'no-store' }),
                     fetch('/api/leads', {
+                        cache: 'no-store',
                         headers: { 'Authorization': `Bearer ${localStorage.getItem('admin_token')}` }
                     })
                 ]);

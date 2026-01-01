@@ -225,12 +225,12 @@ async def process_message(message: str, history: list = []):
     from datetime import datetime
     today = datetime.now().strftime("%B %d, %Y")
     
-    system_prompt = f"""You are Leandro Alvarez's AI Portfolio Assistant.
+    system_prompt_template = f"""You are Leandro Alvarez's AI Portfolio Assistant.
 
 TODAY'S DATE: {today}
 
 PORTFOLIO CONTEXT (Use this to answer questions):
-{full_context_json}
+{{portfolio_context}}
 
 CORE RULES:
 1. You ALREADY have Leandro's info in the "PORTFOLIO CONTEXT" above. DO NOT ask to look it up.
@@ -245,10 +245,9 @@ NEVER discuss:
 
 If asked about something unrelated to Leandro's work, politely redirect to his expertise in AI, automation, and development."""
     
-    
-    # CRITICAL: Use SystemMessage for content with JSON to avoid brace parsing issues
+    # Use standard templating with variable injection
     prompt = ChatPromptTemplate.from_messages([
-        SystemMessage(content=system_prompt),
+        ("system", system_prompt_template),
         MessagesPlaceholder(variable_name="chat_history"),
         ("user", "{input}"),
         MessagesPlaceholder(variable_name="agent_scratchpad"),
@@ -270,7 +269,8 @@ If asked about something unrelated to Leandro's work, politely redirect to his e
     try:
         result = await agent_executor.ainvoke({
             "input": message,
-            "chat_history": history
+            "chat_history": history,
+            "portfolio_context": full_context_json
         })
         
         return result["output"]
