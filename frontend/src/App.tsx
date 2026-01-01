@@ -16,6 +16,7 @@ function App() {
   const isAdmin = path === '/admin';
 
   if (isAdmin) {
+    // AdminPanel component handles its own login/auth internally
     return <AdminPanel />;
   }
 
