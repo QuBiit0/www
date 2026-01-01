@@ -62,20 +62,26 @@ async def init_portfolio_data(db: AsyncSession):
     # 1. Check total length (must be substantial, > 500 chars)
     # 2. Check for critical keys in Spanish section
     is_valid = False
-    if existing:
-        context_str = json.dumps(existing)
-        if len(context_str) > 500:
-            es_data = existing.get("es", {})
-            if "projects" in es_data and "skills" in es_data and "experience" in es_data:
-                is_valid = True
-                print("DEBUG: Existing portfolio data validation PASSED.")
-            else:
-                print("DEBUG: Existing data missing critical keys (projects/skills/experience). forcing reload.")
-        else:
-            print(f"DEBUG: Existing data too short ({len(context_str)} chars). Forcing reload.")
+    
+    # FORCE RELOAD STRATEGY: 
+    # Always try to load from file first to ensure DB is in sync with Codebase.
+    # Only rely on DB if file is missing.
+    print("DEBUG: Force-checking file system for portfolio updates...")
+    
+    # if existing:
+    #     context_str = json.dumps(existing)
+    #     if len(context_str) > 500:
+    #         es_data = existing.get("es", {})
+    #         if "projects" in es_data and "skills" in es_data and "experience" in es_data:
+    #             is_valid = True
+    #             print("DEBUG: Existing portfolio data validation PASSED.")
+    #         else:
+    #             print("DEBUG: Existing data missing critical keys (projects/skills/experience). forcing reload.")
+    #     else:
+    #         print(f"DEBUG: Existing data too short ({len(context_str)} chars). Forcing reload.")
             
-    if is_valid:
-        return
+    # if is_valid:
+    #     return
     
     # Load from file (legacy path)
     try:
