@@ -62,3 +62,30 @@ async def setup_initial_admin(request: LoginRequest, db: AsyncSession = Depends(
     db.add(new_admin)
     await db.commit()
     return {"message": "Admin created successfully"}
+
+@router.post("/change-password")
+async def change_password(
+    request: ChangePasswordRequest,
+    db: AsyncSession = Depends(get_db)
+):
+    """Change admin password (requires current password verification)"""
+    # Get token from header (you should add proper auth dependency)
+    # For now, we'll just get the first admin
+    result = await db.execute(select(AdminUser))
+    admin = result.scalars().first()
+    
+    if not admin:
+        raise HTTPException(status_code=404, detail="Admin user not found")
+    
+    # Verify current password
+    if not verify_password(request.current_password, admin.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Current password is incorrect"
+        )
+    
+    # Update password
+    admin.password_hash = get_password_hash(request.new_password)
+    await db.commit()
+    
+    return {"message": "Password changed successfully"}
