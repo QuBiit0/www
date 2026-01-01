@@ -1,10 +1,10 @@
 import { Project, Experience, Education, Certification } from './types';
-import { 
-  Cpu, 
-  Code2, 
-  Bot, 
-  Database, 
-  Workflow, 
+import {
+  Cpu,
+  Code2,
+  Bot,
+  Database,
+  Workflow,
   Terminal,
   Shield,
   Server,
@@ -20,10 +20,10 @@ export const PERSONAL_INFO = {
   phone: "+543731661851",
   email: "info@leandroalvarez.com.ar",
   secondaryEmail: "leomalvarez89@gmail.com",
-  profileImage: "/profile.jpg.jpg", 
+  profileImage: "/profile.jpg.jpg",
   socials: {
-    linkedin: "https://www.linkedin.com/in/leandro-alvarez", 
-    github: "https://github.com/leandroalvarez", 
+    linkedin: "https://www.linkedin.com/in/leandro-alvarez",
+    github: "https://github.com/QuBiit0/",
   }
 };
 
