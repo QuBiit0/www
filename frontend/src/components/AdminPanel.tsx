@@ -4,6 +4,7 @@ import {
     ShieldCheck, Cpu, Users, Key, LogOut, Globe, Layout,
     Download, AlertCircle, FileText, ChevronRight
 } from 'lucide-react';
+import Login from './Login';
 
 interface Settings {
     provider: string;
@@ -64,6 +65,9 @@ const PROVIDER_CONFIGS = {
 };
 
 const AdminPanel: React.FC = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [checkingAuth, setCheckingAuth] = useState(true);
+
     const [settings, setSettings] = useState<Settings>({
         provider: 'gemini',
         model_name: 'gemini-2.5-flash',
@@ -107,7 +111,18 @@ const AdminPanel: React.FC = () => {
     const [passMsg, setPassMsg] = useState('');
     const [passLoading, setPassLoading] = useState(false);
 
+    // Check authentication on mount
     useEffect(() => {
+        const token = localStorage.getItem('admin_token');
+        if (token) {
+            setIsAuthenticated(true);
+        }
+        setCheckingAuth(false);
+    }, []);
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+
         const fetchData = async () => {
             try {
                 const [settingsRes, statsRes, portfolioRes, leadsRes] = await Promise.all([
@@ -296,6 +311,26 @@ const AdminPanel: React.FC = () => {
         }
     };
 
+    // Handle logout
+    const handleLogout = () => {
+        localStorage.removeItem('admin_token');
+        setIsAuthenticated(false);
+    };
+
+    // Show login if not authenticated
+    if (checkingAuth) {
+        return (
+            <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+                <div className="text-white">Loading...</div>
+            </div>
+        );
+    }
+
+    if (!isAuthenticated) {
+        return <Login onLoginSuccess={() => setIsAuthenticated(true)} />;
+    }
+
+    // Main Admin Panel (existing code continues...)
     return (
         <div className="min-h-screen bg-slate-900 text-slate-300 font-sans p-8">
             <div className="max-w-6xl mx-auto space-y-8">
