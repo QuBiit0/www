@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, Globe, Lock } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import Logo from './Logo';
 
@@ -55,6 +55,15 @@ const Navigation: React.FC = () => {
             <Globe size={16} />
             {language === 'es' ? 'ES' : 'EN'}
           </button>
+
+          {/* Admin Access (Subtle) */}
+          <a
+            href="/admin"
+            className="text-slate-600 hover:text-slate-400 transition-colors p-2"
+            title="Admin Access"
+          >
+            <Lock size={14} />
+          </a>
         </div>
 
         {/* Mobile Menu Button */}
