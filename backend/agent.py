@@ -257,8 +257,9 @@ async def process_message(message: str, history: list = []):
 
     <operation_protocols>
         <protocol id="knowledge_retrieval">
-            Check 'projects', 'skills', 'experience', and 'personal_info' in the context data.
-            If a detail is found there, answer efficiently.
+            Analyze ALL available sections in the provided context data.
+            Do not limit yourself to specific keys. If the user asks about a topic (e.g. "Awards", "Education"), look for it anywhere in the JSON.
+            If a detail is found, answer efficiently.
             If a detail is missing, say "I don't have that specific detail right now" and offer to connect.
         </protocol>
 
