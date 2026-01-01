@@ -58,10 +58,23 @@ async def init_portfolio_data(db: AsyncSession):
     """
     existing = await get_portfolio_data(db)
     
-    # Check if data is substantial (not just empty structure)
-    # If existing is just {"es": {}, "en": {}}, it's length is small (~22 chars)
-    # So we force re-seed if it's too small
-    if existing and len(json.dumps(existing)) > 50:
+    # STRICT VALIDATION: Check if data is truly complete
+    # 1. Check total length (must be substantial, > 500 chars)
+    # 2. Check for critical keys in Spanish section
+    is_valid = False
+    if existing:
+        context_str = json.dumps(existing)
+        if len(context_str) > 500:
+            es_data = existing.get("es", {})
+            if "projects" in es_data and "skills" in es_data and "experience" in es_data:
+                is_valid = True
+                print("DEBUG: Existing portfolio data validation PASSED.")
+            else:
+                print("DEBUG: Existing data missing critical keys (projects/skills/experience). forcing reload.")
+        else:
+            print(f"DEBUG: Existing data too short ({len(context_str)} chars). Forcing reload.")
+            
+    if is_valid:
         return
     
     # Load from file (legacy path)

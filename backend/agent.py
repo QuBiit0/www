@@ -279,6 +279,7 @@ TODAY'S DATE: {today}
     )
 
     try:
+        print(f"DEBUG: Agent invoking with context size: {len(full_context_json)}")
         result = await agent_executor.ainvoke({
             "input": message,
             "chat_history": history,
