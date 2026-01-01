@@ -643,7 +643,7 @@ const AdminPanel: React.FC = () => {
 
                             {/* Save Button */}
                             <button
-                                onClick={handleSave}
+                                onClick={handleGlobalSave}
                                 disabled={loading}
                                 className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 px-8 rounded-xl shadow-2xl shadow-indigo-600/30 transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
