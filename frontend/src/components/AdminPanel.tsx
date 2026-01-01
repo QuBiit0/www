@@ -175,7 +175,7 @@ const AdminPanel: React.FC = () => {
         };
 
         fetchData();
-    }, []);
+    }, [isAuthenticated]);
 
     // Helper to switch provider and defaults
     const switchProvider = (provider: string) => {
