@@ -39,11 +39,11 @@ export const translations = {
             error: "Error al enviar mensaje"
         },
         chat: {
-            welcome: "Hola! Soy el asistente virtual de Leandro. ¿En qué puedo ayudarte hoy? Pregúntame sobre su experiencia, skills o proyectos.",
+            welcome: "¡Hola! Soy Leandro (versión IA). ¿En qué puedo ayudarte? Pregúntame sobre mi experiencia, skills o proyectos.",
             placeholder: "Pregunta sobre mis proyectos...",
             thinking: "Pensando...",
             error: "Lo siento, hubo un error al conectar con la IA. Por favor intenta más tarde.",
-            assistantName: "Asistente de Leo",
+            assistantName: "Leandro (AI)",
             poweredBy: "Powered by Gemini 2.5"
         }
     },
@@ -73,7 +73,7 @@ export const translations = {
         },
         education: {
             title: "Education",
-            certifications: "Certifications & Achievements"
+            certifications: "Certificaciones & Achievements"
         },
         contact: {
             title: "Contact",
@@ -87,11 +87,11 @@ export const translations = {
             error: "Error sending message"
         },
         chat: {
-            welcome: "Hi! I'm Leandro's virtual assistant. How can I help you today? Ask me about his experience, skills, or projects.",
+            welcome: "Hi! I'm Leandro (AI version). How can I help you? Ask me about my experience, skills, or projects.",
             placeholder: "Ask about my projects...",
             thinking: "Thinking...",
             error: "Sorry, there was an error connecting to the AI. Please try again later.",
-            assistantName: "Leo's Assistant",
+            assistantName: "Leandro (AI)",
             poweredBy: "Powered by Gemini 2.5"
         }
     }

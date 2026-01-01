@@ -105,7 +105,7 @@ const ChatAssistant: React.FC = () => {
                   <Bot size={20} className="text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-sm">Leo's Assistant</h3>
+                  <h3 className="font-bold text-white text-sm">{t('chat.assistantName')}</h3>
                   <p className="text-xs text-green-400 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
                     Online
