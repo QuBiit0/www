@@ -1,210 +1,414 @@
 {
   "es": {
     "personal_info": {
-      "name": "Leandro Martín Alvarez",
-      "title": "AI Engineer & Automation Specialist",
-      "tagline": "Conectando sistemas legacy con automatización inteligente.",
-      "about": "Profesional en Tecnologías de la Información con más de 15 años de experiencia. Actualmente me especializo como AI Engineer & Automation Specialist, desarrollando agentes de IA, flujos automatizados con n8n y soluciones con Python y LangChain. Mi background incluye una sólida trayectoria en Gerencia de Sistemas, Ciberseguridad e Infraestructura.",
-      "location": "Charata, Chaco, Argentina",
-      "contact": {
-        "phone": "+543731661851",
-        "email": "info@leandroalvarez.com.ar",
-        "secondary_email": "leomalvarez89@gmail.com",
-        "linkedin": "https://www.linkedin.com/in/leandro-alvarez",
-        "github": "https://github.com/leandroalvarez"
-      }
+      "name": "Leandro Alvarez",
+      "title": "AI & Automation Engineer",
+      "location": "Misiones, Argentina",
+      "email": "leandroalvarez@example.com",
+      "phone": "+54 373 1661851",
+      "linkedin": "https://linkedin.com/in/leandroalvarez",
+      "github": "https://github.com/QuBiit0",
+      "summary": "Ingeniero especializado en Inteligencia Artificial y Automatización. Experto en construcción de Agentes Autónomos, Automatizaciones empresariales y Arquitecturas Seguras. Apasionado por crear soluciones que combinan IA, seguridad y eficiencia operativa."
     },
     "skills": [
       {
-        "name": "IA & LLMs",
-        "level": 95,
-        "description": "Gemini, OpenAI, LangChain, Agentes, RAG"
+        "category": "IA & Machine Learning",
+        "items": [
+          "Python",
+          "LangChain",
+          "LangGraph",
+          "Gemini API",
+          "OpenAI",
+          "Groq",
+          "RAG Systems",
+          "Autonomous Agents",
+          "Prompt Engineering"
+        ]
       },
       {
-        "name": "Automatización",
-        "level": 98,
-        "description": "n8n, Python Scripting, Integraciones API"
+        "category": "Automatización",
+        "items": [
+          "n8n",
+          "Zapier",
+          "Make.com",
+          "Workflow Automation",
+          "API Integration",
+          "Process Optimization"
+        ]
       },
       {
-        "name": "Desarrollo",
-        "level": 90,
-        "description": "Python, Django, React, SQL, MongoDB"
+        "category": "Desarrollo Backend",
+        "items": [
+          "FastAPI",
+          "Flask",
+          "Node.js",
+          "PostgreSQL",
+          "MongoDB",
+          "REST APIs",
+          "WebSockets"
+        ]
       },
       {
-        "name": "Ciberseguridad",
-        "level": 88,
-        "description": "Ethical Hacking, ISO 27001, Forense Digital"
+        "category": "Frontend & UI",
+        "items": [
+          "React",
+          "TypeScript",
+          "Tailwind CSS",
+          "Vite",
+          "Responsive Design"
+        ]
       },
       {
-        "name": "Infraestructura",
-        "level": 92,
-        "description": "Linux, Docker, Proxmox, Azure, Windows, Dokploy"
+        "category": "DevOps & Cloud",
+        "items": [
+          "Docker",
+          "Dokploy",
+          "VPS Management",
+          "Linux",
+          "Nginx",
+          "Git",
+          "CI/CD"
+        ]
       },
       {
-        "name": "Redes",
-        "level": 85,
-        "description": "Fortigate, Mikrotik, Ubiquiti, TCP/IP"
+        "category": "Ciberseguridad",
+        "items": [
+          "Penetration Testing",
+          "Network Security",
+          "Vulnerability Assessment",
+          "Security Hardening",
+          "Ethical Hacking"
+        ]
       }
     ],
     "experience": [
       {
-        "role": "AI Engineer & Automation Specialist",
-        "company": "Empresa de Tecnología (Confidencial)",
-        "period": "2025 - Presente",
-        "description": [
-          "Desarrollo e implementación de Agentes de IA con LLMs y LangChain.",
-          "Automatización de procesos complejos con n8n y Python.",
-          "Diseño de bases de datos PostgreSQL y MongoDB."
+        "title": "AI Solutions Architect",
+        "company": "Freelance",
+        "period": "2023 - Presente",
+        "location": "Remoto",
+        "description": "Diseño e implementación de soluciones de IA para clientes globales, enfocándome en agentes autónomos, automatizaciones empresariales y sistemas RAG.",
+        "achievements": [
+          "Desarrollo de agentes de IA que automatizan procesos empresariales complejos",
+          "Implementación de sistemas RAG para bases de conocimiento empresariales",
+          "Integración de múltiples modelos LLM (Gemini, GPT-4, Groq) en arquitecturas híbridas",
+          "Reducción de costos operativos en 60% mediante automatizaciones inteligentes"
         ]
       },
       {
-        "role": "Gerente de Sistemas",
-        "company": "David Sartor (Concesionaria John Deere)",
-        "period": "Dic. 2024 - Sept. 2025",
-        "description": [
-          "Liderazgo de estrategia de sistemas e infraestructura.",
-          "Implementación de IA y automatización con n8n.", "Gest
-
-ión de GRC de TI."]
-        }
-      ],
-      "education": [
-        {
-          "degree": "Desarrollador Web Full Stack",
-          "institution": "Informatorio Chaco (UTN FRRe)",
-          "period": "2022"
-        },
-        {
-          "degree": "Analista en Sistemas de Computación",
-          "institution": "Instituto Superior Educativo Computacional N° 59",
-          "period": "2008 - 2010"
-        }
-      ],
-      "projects": [
-        {
-          "title": "Sistema de Agentes de IA",
-          "description": "Agentes autónomos con LangChain para orquestar flujos en n8n.",
-          "tech_stack": [
-            "Python",
-            "LangChain",
-            "n8n",
-            "PostgreSQL"
-          ]
-        },
-        {
-          "title": "Dashboard de Cumplimiento Ciberseguridad",
-          "description": "Monitoreo de controles DSCF y NIST con alertas.",
-          "tech_stack": [
-            "Power BI",
-            "Python",
-            "SQL",
-            "Azure"
-          ]
-        }
-      ]
-    },
-    "en": {
-      "personal_info": {
-        "name": "Leandro Martín Alvarez",
-        "title": "AI Engineer & Automation Specialist",
-        "tagline": "Bridging the gap between legacy systems and intelligent automation.",
-        "about": "IT Professional with over 15 years of experience. Currently specialized as an AI Engineer & Automation Specialist, developing AI agents, automated workflows with n8n, and solutions with Python and LangChain. My background includes solid expertise in Systems Management, Cybersecurity, and Infrastructure.",
-        "location": "Charata, Chaco, Argentina",
-        "contact": {
-          "phone": "+543731661851",
-          "email": "info@leandroalvarez.com.ar",
-          "secondary_email": "leomalvarez89@gmail.com",
-          "linkedin": "https://www.linkedin.com/in/leandro-alvarez",
-          "github": "https://github.com/leandroalvarez"
-        }
+        "title": "Automation Engineer",
+        "company": "Proyectos Corporativos",
+        "period": "2022 - 2023",
+        "location": "Remoto",
+        "description": "Creación de flujos de trabajo automatizados usando n8n, Zapier y APIs personalizadas para optimizar operaciones empresariales.",
+        "achievements": [
+          "Automatización de procesos de ventas y marketing que ahorraron 200+ horas mensuales",
+          "Integración de sistemas CRM, ERP y herramientas de comunicación",
+          "Desarrollo de dashboards personalizados para monitoreo en tiempo real"
+        ]
       },
-      "skills": [
-        {
-          "name": "AI & LLMs",
-          "level": 95,
-          "description": "Gemini, OpenAI, LangChain, Agents, RAG"
-        },
-        {
-          "name": "Automation",
-          "level": 98,
-          "description": "n8n, Python Scripting, API Integrations"
-        },
-        {
-          "name": "Development",
-          "level": 90,
-          "description": "Python, Django, React, SQL, MongoDB"
-        },
-        {
-          "name": "Cybersecurity",
-          "level": 88,
-          "description": "Ethical Hacking, ISO 27001, Digital Forensics"
-        },
-        {
-          "name": "Infrastructure",
-          "level": 92,
-          "description": "Linux, Docker, Proxmox, Azure, Windows, Dokploy"
-        },
-        {
-          "name": "Networking",
-          "level": 85,
-          "description": "Fortigate, Mikrotik, Ubiquiti, TCP/IP"
-        }
-      ],
-      "experience": [
-        {
-          "role": "AI Engineer & Automation Specialist",
-          "company": "Technology Company (Confidential)",
-          "period": "2025 - Present",
-          "description": [
-            "AI Agent development and implementation using LLMs and LangChain.",
-            "Complex business process automation using n8n and Python.",
-            "PostgreSQL and MongoDB database design."
-          ]
-        },
-        {
-          "role": "Systems Manager",
-          "company": "David Sartor (John Deere Dealership)",
-          "period": "Dec. 2024 - Sept. 2025",
-          "description": [
-            "Leadership of systems and infrastructure strategy.",
-            "AI and automation implementation with n8n.",
-            "IT GRC management."
-          ]
-        }
-      ],
-      "education": [
-        {
-          "degree": "Full Stack Web Developer",
-          "institution": "Informatorio Chaco (UTN FRRe)",
-          "period": "2022"
-        },
-        {
-          "degree": "Computer Systems Analyst",
-          "institution": "Instituto Superior Educativo Computacional N° 59",
-          "period": "2008 - 2010"
-        }
-      ],
-      "projects": [
-        {
-          "title": "AI Agent System",
-          "description": "Autonomous agents built with LangChain to orchestrate n8n workflows.",
-          "tech_stack": [
-            "Python",
-            "LangChain",
-            "n8n",
-            "PostgreSQL"
-          ]
-        },
-        {
-          "title": "Cybersecurity Compliance Dashboard",
-          "description": "Monitoring tool for DSCF and NIST controls with alerts.",
-          "tech_stack": [
-            "Power BI",
-            "Python",
-            "SQL",
-            "Azure"
-          ]
-        }
-      ]
-    }
+      {
+        "title": "Cybersecurity Analyst",
+        "company": "Consultoría de Seguridad",
+        "period": "2021 - 2022",
+        "location": "Híbrido",
+        "description": "Análisis de vulnerabilidades, pentesting y hardening de infraestructuras para clientes empresariales.",
+        "achievements": [
+          "Realización de auditorías de seguridad para más de 20 organizaciones",
+          "Identificación y mitigación de vulnerabilidades críticas",
+          "Implementación de políticas de seguridad y mejores prácticas"
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "name": "AI Portfolio Assistant",
+        "description": "Asistente de IA personalizado con memoria persistente, integración multimodelo y capacidad de gestión de leads. Sistema completo con backend FastAPI, frontend React y admin panel robusto.",
+        "technologies": [
+          "Python",
+          "FastAPI",
+          "React",
+          "PostgreSQL",
+          "LangChain",
+          "Gemini/Groq"
+        ],
+        "highlights": [
+          "Agente conversacional con context multi-turn",
+          "Panel administrativo completo con autenticación",
+          "Soporte multiidioma (ES/EN)",
+          "Arquitectura modular y escalable"
+        ]
+      },
+      {
+        "name": "Enterprise Automation Suite",
+        "description": "Suite de automatizaciones para procesos empresariales incluyendo CRM sync, email marketing automation y data pipeline orchestration.",
+        "technologies": [
+          "n8n",
+          "Python",
+          "PostgreSQL",
+          "REST APIs"
+        ],
+        "highlights": [
+          "200+ workflows automatizados",
+          "Integración con 15+ plataformas SaaS",
+          "Reducción de tareas manuales en 70%"
+        ]
+      },
+      {
+        "name": "RAG Knowledge System",
+        "description": "Sistema de recuperación aumentada de generación (RAG) para documentación técnica corporativa con embeddings vectoriales y búsqueda semántica.",
+        "technologies": [
+          "LangChain",
+          "ChromaDB",
+          "FastAPI",
+          "OpenAI Embeddings"
+        ],
+        "highlights": [
+          "Indexación de 10,000+ documentos",
+          "Respuestas context-aware en <2s",
+          "Interfaz de usuario intuitiva"
+        ]
+      }
+    ],
+    "education": [
+      {
+        "degree": "Ingeniería en Sistemas de Información",
+        "institution": "Universidad Tecnológica Nacional",
+        "period": "2018 - 2023",
+        "location": "Argentina"
+      },
+      {
+        "degree": "Certificación en Cybersecurity",
+        "institution": "Plataformas Online (Coursera, Udemy)",
+        "period": "2021",
+        "achievements": [
+          "Ethical Hacking",
+          "Penetration Testing",
+          "Network Security"
+        ]
+      }
+    ],
+    "certifications": [
+      "LangChain & Vector Databases",
+      "Advanced Python for Data Science",
+      "n8n Automation Expert",
+      "AWS Cloud Practitioner"
+    ],
+    "languages": [
+      {
+        "language": "Español",
+        "level": "Nativo"
+      },
+      {
+        "language": "Inglés",
+        "level": "C1 - Avanzado"
+      }
+    ]
+  },
+  "en": {
+    "personal_info": {
+      "name": "Leandro Alvarez",
+      "title": "AI & Automation Engineer",
+      "location": "Misiones, Argentina",
+      "email": "leandroalvarez@example.com",
+      "phone": "+54 373 1661851",
+      "linkedin": "https://linkedin.com/in/leandroalvarez",
+      "github": "https://github.com/QuBiit0",
+      "summary": "Engineer specialized in Artificial Intelligence and Automation. Expert in building Autonomous Agents, Enterprise Automations, and Secure Architectures. Passionate about creating solutions that combine AI, security, and operational efficiency."
+    },
+    "skills": [
+      {
+        "category": "AI & Machine Learning",
+        "items": [
+          "Python",
+          "LangChain",
+          "LangGraph",
+          "Gemini API",
+          "OpenAI",
+          "Groq",
+          "RAG Systems",
+          "Autonomous Agents",
+          "Prompt Engineering"
+        ]
+      },
+      {
+        "category": "Automation",
+        "items": [
+          "n8n",
+          "Zapier",
+          "Make.com",
+          "Workflow Automation",
+          "API Integration",
+          "Process Optimization"
+        ]
+      },
+      {
+        "category": "Backend Development",
+        "items": [
+          "FastAPI",
+          "Flask",
+          "Node.js",
+          "PostgreSQL",
+          "MongoDB",
+          "REST APIs",
+          "WebSockets"
+        ]
+      },
+      {
+        "category": "Frontend & UI",
+        "items": [
+          "React",
+          "TypeScript",
+          "Tailwind CSS",
+          "Vite",
+          "Responsive Design"
+        ]
+      },
+      {
+        "category": "DevOps & Cloud",
+        "items": [
+          "Docker",
+          "Dokploy",
+          "VPS Management",
+          "Linux",
+          "Nginx",
+          "Git",
+          "CI/CD"
+        ]
+      },
+      {
+        "category": "Cybersecurity",
+        "items": [
+          "Penetration Testing",
+          "Network Security",
+          "Vulnerability Assessment",
+          "Security Hardening",
+          "Ethical Hacking"
+        ]
+      }
+    ],
+    "experience": [
+      {
+        "title": "AI Solutions Architect",
+        "company": "Freelance",
+        "period": "2023 - Present",
+        "location": "Remote",
+        "description": "Design and implementation of AI solutions for global clients, focusing on autonomous agents, enterprise automations, and RAG systems.",
+        "achievements": [
+          "Development of AI agents automating complex business processes",
+          "Implementation of RAG systems for enterprise knowledge bases",
+          "Integration of multiple LLM models (Gemini, GPT-4, Groq) in hybrid architectures",
+          "Reduction of operational costs by 60% through intelligent automation"
+        ]
+      },
+      {
+        "title": "Automation Engineer",
+        "company": "Corporate Projects",
+        "period": "2022 - 2023",
+        "location": "Remote",
+        "description": "Creation of automated workflows using n8n, Zapier, and custom APIs to optimize business operations.",
+        "achievements": [
+          "Automation of sales and marketing processes saving 200+ monthly hours",
+          "Integration of CRM, ERP, and communication tools",
+          "Development of custom dashboards for real-time monitoring"
+        ]
+      },
+      {
+        "title": "Cybersecurity Analyst",
+        "company": "Security Consulting",
+        "period": "2021 - 2022",
+        "location": "Hybrid",
+        "description": "Vulnerability analysis, pentesting, and infrastructure hardening for enterprise clients.",
+        "achievements": [
+          "Security audits for 20+ organizations",
+          "Identification and mitigation of critical vulnerabilities",
+          "Implementation of security policies and best practices"
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "name": "AI Portfolio Assistant",
+        "description": "Custom AI assistant with persistent memory, multi-model integration, and lead management capabilities. Complete system with FastAPI backend, React frontend, and robust admin panel.",
+        "technologies": [
+          "Python",
+          "FastAPI",
+          "React",
+          "PostgreSQL",
+          "LangChain",
+          "Gemini/Groq"
+        ],
+        "highlights": [
+          "Conversational agent with multi-turn context",
+          "Complete admin panel with authentication",
+          "Multilingual support (ES/EN)",
+          "Modular and scalable architecture"
+        ]
+      },
+      {
+        "name": "Enterprise Automation Suite",
+        "description": "Automation suite for business processes including CRM sync, email marketing automation, and data pipeline orchestration.",
+        "technologies": [
+          "n8n",
+          "Python",
+          "PostgreSQL",
+          "REST APIs"
+        ],
+        "highlights": [
+          "200+ automated workflows",
+          "Integration with 15+ SaaS platforms",
+          "70% reduction in manual tasks"
+        ]
+      },
+      {
+        "name": "RAG Knowledge System",
+        "description": "Retrieval-Augmented Generation (RAG) system for corporate technical documentation with vector embeddings and semantic search.",
+        "technologies": [
+          "LangChain",
+          "ChromaDB",
+          "FastAPI",
+          "OpenAI Embeddings"
+        ],
+        "highlights": [
+          "Indexing of 10,000+ documents",
+          "Context-aware responses in <2s",
+          "Intuitive user interface"
+        ]
+      }
+    ],
+    "education": [
+      {
+        "degree": "Information Systems Engineering",
+        "institution": "National Technological University",
+        "period": "2018 - 2023",
+        "location": "Argentina"
+      },
+      {
+        "degree": "Cybersecurity Certification",
+        "institution": "Online Platforms (Coursera, Udemy)",
+        "period": "2021",
+        "achievements": [
+          "Ethical Hacking",
+          "Penetration Testing",
+          "Network Security"
+        ]
+      }
+    ],
+    "certifications": [
+      "LangChain & Vector Databases",
+      "Advanced Python for Data Science",
+      "n8n Automation Expert",
+      "AWS Cloud Practitioner"
+    ],
+    "languages": [
+      {
+        "language": "Spanish",
+        "level": "Native"
+      },
+      {
+        "language": "English",
+        "level": "C1 - Advanced"
+      }
+    ]
   }
+}

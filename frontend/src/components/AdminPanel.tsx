@@ -428,10 +428,13 @@ const AdminPanel: React.FC = () => {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <div className={`w-3 h-3 rounded-full animate-pulse ${stats.system_status === 'Operational' ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                    <div className={`w-3 h-3 rounded-full animate-pulse ${stats.system_status === 'Operational' || stats.system_status === 'Online' ? 'bg-green-500' : 'bg-red-500'}`}></div>
                                     <p className="text-2xl font-bold text-white">{stats.system_status}</p>
                                 </div>
-                                <p className="text-xs text-slate-500 mt-2">Provider: {stats.current_provider}</p>
+                                <p className="text-sm text-slate-400 mt-3 flex items-center gap-2">
+                                    <Cpu size={14} className="text-indigo-400" />
+                                    <span className="font-mono">{stats.current_provider}</span>
+                                </p>
                             </div>
                         </div>
 
