@@ -76,7 +76,7 @@ async def update_portfolio(data: dict, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Failed to save portfolio data")
     return {"status": "updated", "message": "Portfolio data saved to Database"}
 
-from models import ChatMessage
+from models import ChatMessage, SystemSettings
 from sqlalchemy import func, select
 
 @app.get("/api/stats")

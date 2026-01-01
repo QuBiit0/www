@@ -57,7 +57,11 @@ async def init_portfolio_data(db: AsyncSession):
     This acts as a seamless migration.
     """
     existing = await get_portfolio_data(db)
-    if existing:
+    
+    # Check if data is substantial (not just empty structure)
+    # If existing is just {"es": {}, "en": {}}, it's length is small (~22 chars)
+    # So we force re-seed if it's too small
+    if existing and len(json.dumps(existing)) > 50:
         return
     
     # Load from file (legacy path)
