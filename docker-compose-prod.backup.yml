@@ -8,7 +8,8 @@ services:
       dockerfile: Dockerfile
     container_name: portfolio-frontend
     restart: always
-    # NO exponer puerto 80 - Dokploy lo maneja
+    ports:
+      - "80:80"
     depends_on:
       - backend
     networks:
@@ -21,13 +22,12 @@ services:
       dockerfile: Dockerfile
     container_name: portfolio-backend
     restart: always
-    # Backend interno, no necesita puerto público
+    ports:
+      - "8000:8000"
     environment:
       - DATABASE_URL=postgresql+asyncpg://user:password@db:5432/portfolio_db
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - GROQ_API_KEY=${GROQ_API_KEY}
-      - SECRET_KEY=${SECRET_KEY}
       - PYTHONUNBUFFERED=1
     depends_on:
       - db
@@ -40,9 +40,9 @@ services:
     container_name: portfolio-db
     restart: always
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=portfolio_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
