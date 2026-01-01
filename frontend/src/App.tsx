@@ -7,13 +7,25 @@ import Experience from './components/Experience';
 import Education from './components/Education';
 import Contact from './components/Contact';
 import ChatAssistant from './components/ChatAssistant';
+import Login from './components/Login';
 import AdminPanel from './components/AdminPanel';
 
 function App() {
   // Simple "Router" for Admin
-  const isAdmin = window.location.pathname === '/admin';
+  const path = window.location.pathname;
+
+  if (path === '/login') {
+    return <Login />;
+  }
+
+  const isAdmin = path === '/admin';
 
   if (isAdmin) {
+    const token = localStorage.getItem('admin_token');
+    if (!token) {
+      window.location.href = '/login';
+      return null;
+    }
     return <AdminPanel />;
   }
 
