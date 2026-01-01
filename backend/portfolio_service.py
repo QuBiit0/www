@@ -30,15 +30,25 @@ async def get_portfolio_data(db: AsyncSession) -> dict:
 async def save_portfolio_data(db: AsyncSession, data: dict) -> bool:
     """Saves new portfolio data version to DB."""
     try:
-        # data should already be {"es": ..., "en": ...} coming from admin
+        # CRITICAL FIX: Deactivate ALL old records first
+        result = await db.execute(select(PortfolioData).where(PortfolioData.is_active == True))
+        old_records = result.scalars().all()
+        for record in old_records:
+            record.is_active = False
+        
+        # Now create the new active record
         content_str = json.dumps(data, ensure_ascii=False)
         new_record = PortfolioData(content=content_str, is_active=True)
         db.add(new_record)
         await db.commit()
         await db.refresh(new_record)
+        print(f"DEBUG: Portfolio saved successfully, ID: {new_record.id}")
         return True
     except Exception as e:
+        await db.rollback()
         print(f"Error saving to DB: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 async def init_portfolio_data(db: AsyncSession):
