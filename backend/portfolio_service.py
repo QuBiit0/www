@@ -69,10 +69,24 @@ async def init_portfolio_data(db: AsyncSession):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(base_dir, "data", "portfolio.json")
         
+        print(f"DEBUG: Attempting to init portfolio from: {file_path}")
         if os.path.exists(file_path):
             with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                await save_portfolio_data(db, data)
+                print(f"DEBUG: Loaded data from file. Keys: {list(data.keys())}")
+                result = await save_portfolio_data(db, data)
+                print(f"DEBUG: init_portfolio_data save result: {result}")
                 print("Initialized PortfolioData in DB from file.")
+        else:
+            print(f"CRITICAL ERROR: Portfolio file NOT FOUND at {file_path}")
+            # Try fallback to local dir if running differently
+            fallback_path = "data/portfolio.json"
+            if os.path.exists(fallback_path):
+                print(f"DEBUG: Found fallback at {fallback_path}")
+                with open(fallback_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    await save_portfolio_data(db, data)
     except Exception as e:
         print(f"Migration error: {e}")
+        import traceback
+        traceback.print_exc()

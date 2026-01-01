@@ -135,7 +135,7 @@ const AdminPanel: React.FC = () => {
                         headers: { 'Authorization': `Bearer ${localStorage.getItem('admin_token')}` }
                     }),
                     fetch('/api/portfolio', { cache: 'no-store' }),
-                    fetch('/api/leads', {
+                    fetch('/api/leads/', {
                         cache: 'no-store',
                         headers: { 'Authorization': `Bearer ${localStorage.getItem('admin_token')}` }
                     })
