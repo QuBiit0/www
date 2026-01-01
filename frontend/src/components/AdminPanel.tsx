@@ -44,22 +44,23 @@ const PROVIDER_CONFIGS = {
     groq: {
         displayName: "Groq",
         baseUrl: "https://api.groq.com/openai/v1",
-        "llama-3.1-8b-instant",
-        "llama-3.3-70b-versatile",
-        "mixtral-8x7b-32768",
-        "gemma2-9b-it",
-        "llama-guard-3-8b"
+        models: [
+            "llama-3.1-8b-instant",
+            "llama-3.3-70b-versatile",
+            "mixtral-8x7b-32768",
+            "gemma2-9b-it",
+            "llama-guard-3-8b"
         ],
-defaultModel: "llama-3.3-70b-versatile",
-    color: "orange"
+        defaultModel: "llama-3.3-70b-versatile",
+        color: "orange"
     },
-custom: {
-    displayName: "Custom Provider",
+    custom: {
+        displayName: "Custom Provider",
         baseUrl: "",
-            models: [],
-                defaultModel: "",
-                    color: "purple"
-}
+        models: [],
+        defaultModel: "",
+        color: "purple"
+    }
 };
 
 const AdminPanel: React.FC = () => {
