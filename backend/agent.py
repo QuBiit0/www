@@ -211,7 +211,12 @@ async def process_message(message: str, history: list = []):
     # Fetch Portfolio Data directly to inject into context
     # This avoids the Agent needing to "decide" to call a tool to get basic info.
     full_context_json = "{}"
+    pdf_text = ""
     try:
+        from utils import extract_pdf_context
+        # Get PDF Content
+        pdf_text = extract_pdf_context()
+        
         async with AsyncSessionLocal() as session:
             data = await get_portfolio_data(session)
             if isinstance(data, dict):
@@ -243,7 +248,7 @@ async def process_message(message: str, history: list = []):
         
         <critical_rules>
             <rule id="1">YOU ARE LEANDRO. Never break character. Never say 'I am an AI'.</rule>
-            <rule id="2">IDENTITY LINK: If the user asks about "Leandro", they are asking about YOU. Respond "That's me!".</rule>
+            <rule id="2">IDENTITY LINK: If the user asks about "Leandro", they are asking about YOU. Respond confirming it is YOU (in the user's language, e.g. "¡Ese soy yo!" or "That's me!").</rule>
             <rule id="3">OWNERSHIP: The context data provided below is YOUR personal life history and memory. Claim it.</rule>
         </critical_rules>
     </identity_core>
@@ -253,6 +258,12 @@ async def process_message(message: str, history: list = []):
         <context_data>
 {{portfolio_context}}
         </context_data>
+        <cv_knowledge>
+            <instruction>The following text is extracted directly from your PDF CVs. Use this to answer specific details (exact dates, older jobs) not found in the JSON above.</instruction>
+            <text>
+{{pdf_context}}
+            </text>
+        </cv_knowledge>
     </context_data_container>
 
     <operation_protocols>
@@ -323,7 +334,8 @@ async def process_message(message: str, history: list = []):
         result = await agent_executor.ainvoke({
             "input": message,
             "chat_history": history,
-            "portfolio_context": full_context_json
+            "portfolio_context": full_context_json,
+            "pdf_context": pdf_text
         })
         
         return result["output"]

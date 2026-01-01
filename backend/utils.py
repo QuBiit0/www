@@ -40,8 +40,54 @@ def save_portfolio_data(data: Dict[str, Any]) -> bool:
 
 def validate_email(email: str) -> bool:
     """Basic email validation regex."""
-    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return bool(re.match(pattern, email))
+
+def extract_pdf_context() -> str:
+    """
+    scans 'frontend/public' for PDF files (CVs) and extracts text content.
+    Returns a consolidated string of all PDF text to inject into Agent context.
+    """
+    try:
+        from pypdf import PdfReader
+        
+        # Locate frontend/public relative to backend/utils.py
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        public_dir = os.path.join(base_dir, "..", "frontend", "public")
+        
+        if not os.path.exists(public_dir):
+            print(f"Warning: Public dir not found at {public_dir}")
+            return ""
+
+        consolidated_text = ""
+        pdf_count = 0
+        
+        for filename in os.listdir(public_dir):
+            if filename.lower().endswith(".pdf"):
+                pdf_path = os.path.join(public_dir, filename)
+                try:
+                    reader = PdfReader(pdf_path)
+                    text = f"\n--- CONTENT FROM FILE: {filename} ---\n"
+                    for page in reader.pages:
+                        extracted = page.extract_text()
+                        if extracted:
+                            text += extracted + "\n"
+                    consolidated_text += text
+                    pdf_count += 1
+                except Exception as e:
+                    print(f"Error reading PDF {filename}: {e}")
+
+        if pdf_count > 0:
+            print(f"DEBUG: Successfully extracted text from {pdf_count} PDF files.")
+            return consolidated_text
+        else:
+            return ""
+
+    except ImportError:
+        print("Error: pypdf not installed. Cannot read CVs.")
+        return ""
+    except Exception as e:
+        print(f"Error in extract_pdf_context: {e}")
+        return ""
 
 # Simple in-memory cache for LLM instances to avoid recreating them on every request
 _llm_cache = {}
