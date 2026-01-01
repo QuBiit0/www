@@ -701,6 +701,18 @@ const AdminPanel: React.FC = () => {
                                 </div>
                             )}
                         </div>
+
+                        {/* Added Save Button for Portfolio */}
+                        <div className="pt-4 border-t border-slate-700">
+                            <button
+                                onClick={handleGlobalSave}
+                                disabled={loading}
+                                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 px-8 rounded-xl shadow-2xl shadow-indigo-600/30 transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <Save size={22} />
+                                {loading ? 'SAVING CONTENT...' : 'SAVE PORTFOLIO CHANGES'}
+                            </button>
+                        </div>
                     </div>
                 )}
 

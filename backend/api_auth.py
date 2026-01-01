@@ -6,13 +6,13 @@ from datetime import timedelta
 
 from database import get_db
 from models import AdminUser
-from auth_service import verify_password, get_password_hash, create_access_token
+from auth_service import verify_password, get_password_hash, create_access_token, get_current_admin
 from settings import get_settings
 
 settings = get_settings()
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
-settings = get_settings()
+# settings = get_settings()  <-- Remove duplicate
 
 class Token(BaseModel):
     access_token: str
@@ -66,12 +66,12 @@ async def setup_initial_admin(request: LoginRequest, db: AsyncSession = Depends(
 @router.post("/change-password")
 async def change_password(
     request: ChangePasswordRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_username: str = Depends(get_current_admin)
 ):
     """Change admin password (requires current password verification)"""
-    # Get token from header (you should add proper auth dependency)
-    # For now, we'll just get the first admin
-    result = await db.execute(select(AdminUser))
+    
+    result = await db.execute(select(AdminUser).where(AdminUser.username == current_username))
     admin = result.scalars().first()
     
     if not admin:
