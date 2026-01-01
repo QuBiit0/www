@@ -24,15 +24,6 @@ async def lifespan(app: FastAPI):
         import traceback
         traceback.print_exc()
         print(f"CRITICAL STARTUP ERROR: {e}")
-    
-    # Initialize Admin User
-    try:
-        from init_admin import init_admin_user
-        await init_admin_user()
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        print(f"ADMIN INIT ERROR: {e}")
         
     yield
     # Shutdown
