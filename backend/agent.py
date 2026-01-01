@@ -2,7 +2,7 @@ from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain.agents import AgentExecutor, create_openai_tools_agent, tool
+from langchain.agents import AgentExecutor, create_tool_calling_agent, tool
 from settings import get_settings
 
 settings = get_settings()
@@ -12,6 +12,7 @@ from utils import get_cached_llm, set_cached_llm
 from portfolio_service import get_portfolio_data
 from database import AsyncSessionLocal
 import json
+import os
 
 # --- Tools Definition ---
 @tool
@@ -236,24 +237,11 @@ If asked about something unrelated to Leandro's work, politely redirect to his e
         MessagesPlaceholder(variable_name="agent_scratchpad"),
     ])
     
-    # Get provider from settings to determine if bind_tools is needed
-    # We need to know the provider to apply the correct binding strategy
-    async with AsyncSessionLocal() as db_session:
-        from sqlalchemy import select
-        from models import SystemSettings
-        result = await db_session.execute(select(SystemSettings).order_by(SystemSettings.id.desc()).limit(1))
-        db_settings = result.scalars().first()
-        provider = db_settings.provider if db_settings else "gemini"
-
-    # CRITICAL: Groq works best when tools are explicitly bound before passing to the agent constructor.
-    # However, Gemini (via ChatGoogleGenerativeAI) and create_openai_tools_agent can conflict if double-bound.
-    # We only explicitly bind for Groq.
-    if provider == "groq":
-        llm_with_tools = llm.bind_tools(tools)
-    else:
-        llm_with_tools = llm
-
-    agent = create_openai_tools_agent(llm_with_tools, tools, prompt)
+    # Standardized Tool Binding for ALL providers (Gemini, Groq, OpenAI)
+    # create_tool_calling_agent works with any model that supports bind_tools
+    llm_with_tools = llm.bind_tools(tools)
+    
+    agent = create_tool_calling_agent(llm_with_tools, tools, prompt)
     agent_executor = AgentExecutor(
         agent=agent, 
         tools=tools, 
