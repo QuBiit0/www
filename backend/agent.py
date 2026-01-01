@@ -277,7 +277,11 @@ async def process_message(message: str, history: list = []):
         MessagesPlaceholder(variable_name="agent_scratchpad"),
     ])
     
-    agent = create_openai_tools_agent(llm, tools, prompt)
+    # CRITICAL FIX: Groq requires explicit tool binding
+    # Without this, Groq rejects tool calls with: "tool not in request.tools"
+    llm_with_tools = llm.bind_tools(tools)
+    
+    agent = create_openai_tools_agent(llm_with_tools, tools, prompt)
     agent_executor = AgentExecutor(
         agent=agent, 
         tools=tools, 
