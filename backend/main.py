@@ -47,9 +47,6 @@ app.include_router(auth_router)
 from api_leads import router as leads_router
 app.include_router(leads_router)
 
-from api_leads import router as leads_router
-app.include_router(leads_router)
-
 # CORS middleware configuration
 app.add_middleware(
     CORSMiddleware,

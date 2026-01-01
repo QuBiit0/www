@@ -26,6 +26,7 @@ class ChangePasswordRequest(BaseModel):
     current_password: str
     new_password: str
 
+@router.post("/login", response_model=Token)
 @router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: LoginRequest, db: AsyncSession = Depends(get_db)):
     # Find user
