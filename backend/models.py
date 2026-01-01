@@ -31,8 +31,8 @@ class PortfolioData(Base):
     id = Column(Integer, primary_key=True, index=True)
     content = Column(String) # Stores JSON string of the portfolio data
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone(timedelta(hours=-3))))
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 class AdminUser(Base):
     __tablename__ = "admin_users"
