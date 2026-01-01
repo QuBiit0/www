@@ -13,6 +13,7 @@ async def get_portfolio_data(db: AsyncSession) -> dict:
     
     if record and record.content:
         data = json.loads(record.content)
+        print(f"DEBUG: Loaded Portfolio Data Type: {type(data)}")
         # Migration: Ensure Bilingual Structure
         if "es" not in data and "en" not in data:
             # Assume current data is Spanish, copy to both to start

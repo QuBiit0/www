@@ -1,149 +1,210 @@
 {
-  "personal_info": {
-    "name": "Leandro Martín Alvarez",
-    "title": "AI Engineer & Automation Specialist",
-    "tagline": "Bridging the gap between legacy systems and intelligent automation.",
-    "about": "Profesional en Tecnologías de la Información con más de 15 años de experiencia. Actualmente me especializo como AI Engineer & Automation Specialist, desarrollando agentes de IA, flujos automatizados con n8n y soluciones con Python y LangChain. Mi background incluye una sólida trayectoria en Gerencia de Sistemas, Ciberseguridad e Infraestructura.",
-    "location": "Charata, Chaco, Argentina",
-    "contact": {
-      "phone": "+543731661851",
-      "email": "info@leandroalvarez.com.ar",
-      "secondary_email": "leomalvarez89@gmail.com",
-      "linkedin": "https://www.linkedin.com/in/leandro-alvarez",
-      "github": "https://github.com/leandroalvarez"
+  "es": {
+    "personal_info": {
+      "name": "Leandro Martín Alvarez",
+      "title": "AI Engineer & Automation Specialist",
+      "tagline": "Conectando sistemas legacy con automatización inteligente.",
+      "about": "Profesional en Tecnologías de la Información con más de 15 años de experiencia. Actualmente me especializo como AI Engineer & Automation Specialist, desarrollando agentes de IA, flujos automatizados con n8n y soluciones con Python y LangChain. Mi background incluye una sólida trayectoria en Gerencia de Sistemas, Ciberseguridad e Infraestructura.",
+      "location": "Charata, Chaco, Argentina",
+      "contact": {
+        "phone": "+543731661851",
+        "email": "info@leandroalvarez.com.ar",
+        "secondary_email": "leomalvarez89@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/leandro-alvarez",
+        "github": "https://github.com/leandroalvarez"
+      }
+    },
+    "skills": [
+      {
+        "name": "IA & LLMs",
+        "level": 95,
+        "description": "Gemini, OpenAI, LangChain, Agentes, RAG"
+      },
+      {
+        "name": "Automatización",
+        "level": 98,
+        "description": "n8n, Python Scripting, Integraciones API"
+      },
+      {
+        "name": "Desarrollo",
+        "level": 90,
+        "description": "Python, Django, React, SQL, MongoDB"
+      },
+      {
+        "name": "Ciberseguridad",
+        "level": 88,
+        "description": "Ethical Hacking, ISO 27001, Forense Digital"
+      },
+      {
+        "name": "Infraestructura",
+        "level": 92,
+        "description": "Linux, Docker, Proxmox, Azure, Windows, Dokploy"
+      },
+      {
+        "name": "Redes",
+        "level": 85,
+        "description": "Fortigate, Mikrotik, Ubiquiti, TCP/IP"
+      }
+    ],
+    "experience": [
+      {
+        "role": "AI Engineer & Automation Specialist",
+        "company": "Empresa de Tecnología (Confidencial)",
+        "period": "2025 - Presente",
+        "description": [
+          "Desarrollo e implementación de Agentes de IA con LLMs y LangChain.",
+          "Automatización de procesos complejos con n8n y Python.",
+          "Diseño de bases de datos PostgreSQL y MongoDB."
+        ]
+      },
+      {
+        "role": "Gerente de Sistemas",
+        "company": "David Sartor (Concesionaria John Deere)",
+        "period": "Dic. 2024 - Sept. 2025",
+        "description": [
+          "Liderazgo de estrategia de sistemas e infraestructura.",
+          "Implementación de IA y automatización con n8n.", "Gest
+
+ión de GRC de TI."]
+        }
+      ],
+      "education": [
+        {
+          "degree": "Desarrollador Web Full Stack",
+          "institution": "Informatorio Chaco (UTN FRRe)",
+          "period": "2022"
+        },
+        {
+          "degree": "Analista en Sistemas de Computación",
+          "institution": "Instituto Superior Educativo Computacional N° 59",
+          "period": "2008 - 2010"
+        }
+      ],
+      "projects": [
+        {
+          "title": "Sistema de Agentes de IA",
+          "description": "Agentes autónomos con LangChain para orquestar flujos en n8n.",
+          "tech_stack": [
+            "Python",
+            "LangChain",
+            "n8n",
+            "PostgreSQL"
+          ]
+        },
+        {
+          "title": "Dashboard de Cumplimiento Ciberseguridad",
+          "description": "Monitoreo de controles DSCF y NIST con alertas.",
+          "tech_stack": [
+            "Power BI",
+            "Python",
+            "SQL",
+            "Azure"
+          ]
+        }
+      ]
+    },
+    "en": {
+      "personal_info": {
+        "name": "Leandro Martín Alvarez",
+        "title": "AI Engineer & Automation Specialist",
+        "tagline": "Bridging the gap between legacy systems and intelligent automation.",
+        "about": "IT Professional with over 15 years of experience. Currently specialized as an AI Engineer & Automation Specialist, developing AI agents, automated workflows with n8n, and solutions with Python and LangChain. My background includes solid expertise in Systems Management, Cybersecurity, and Infrastructure.",
+        "location": "Charata, Chaco, Argentina",
+        "contact": {
+          "phone": "+543731661851",
+          "email": "info@leandroalvarez.com.ar",
+          "secondary_email": "leomalvarez89@gmail.com",
+          "linkedin": "https://www.linkedin.com/in/leandro-alvarez",
+          "github": "https://github.com/leandroalvarez"
+        }
+      },
+      "skills": [
+        {
+          "name": "AI & LLMs",
+          "level": 95,
+          "description": "Gemini, OpenAI, LangChain, Agents, RAG"
+        },
+        {
+          "name": "Automation",
+          "level": 98,
+          "description": "n8n, Python Scripting, API Integrations"
+        },
+        {
+          "name": "Development",
+          "level": 90,
+          "description": "Python, Django, React, SQL, MongoDB"
+        },
+        {
+          "name": "Cybersecurity",
+          "level": 88,
+          "description": "Ethical Hacking, ISO 27001, Digital Forensics"
+        },
+        {
+          "name": "Infrastructure",
+          "level": 92,
+          "description": "Linux, Docker, Proxmox, Azure, Windows, Dokploy"
+        },
+        {
+          "name": "Networking",
+          "level": 85,
+          "description": "Fortigate, Mikrotik, Ubiquiti, TCP/IP"
+        }
+      ],
+      "experience": [
+        {
+          "role": "AI Engineer & Automation Specialist",
+          "company": "Technology Company (Confidential)",
+          "period": "2025 - Present",
+          "description": [
+            "AI Agent development and implementation using LLMs and LangChain.",
+            "Complex business process automation using n8n and Python.",
+            "PostgreSQL and MongoDB database design."
+          ]
+        },
+        {
+          "role": "Systems Manager",
+          "company": "David Sartor (John Deere Dealership)",
+          "period": "Dec. 2024 - Sept. 2025",
+          "description": [
+            "Leadership of systems and infrastructure strategy.",
+            "AI and automation implementation with n8n.",
+            "IT GRC management."
+          ]
+        }
+      ],
+      "education": [
+        {
+          "degree": "Full Stack Web Developer",
+          "institution": "Informatorio Chaco (UTN FRRe)",
+          "period": "2022"
+        },
+        {
+          "degree": "Computer Systems Analyst",
+          "institution": "Instituto Superior Educativo Computacional N° 59",
+          "period": "2008 - 2010"
+        }
+      ],
+      "projects": [
+        {
+          "title": "AI Agent System",
+          "description": "Autonomous agents built with LangChain to orchestrate n8n workflows.",
+          "tech_stack": [
+            "Python",
+            "LangChain",
+            "n8n",
+            "PostgreSQL"
+          ]
+        },
+        {
+          "title": "Cybersecurity Compliance Dashboard",
+          "description": "Monitoring tool for DSCF and NIST controls with alerts.",
+          "tech_stack": [
+            "Power BI",
+            "Python",
+            "SQL",
+            "Azure"
+          ]
+        }
+      ]
     }
-  },
-  "skills": [
-    { "name": "AI & LLMs", "level": 95, "description": "Gemini, OpenAI, LangChain, Agents, RAG" },
-    { "name": "Automation", "level": 98, "description": "n8n, Python Scripting, API Integrations" },
-    { "name": "Development", "level": 90, "description": "Python, Django, React, SQL, MongoDB" },
-    { "name": "Cybersecurity", "level": 88, "description": "Ethical Hacking, ISO 27001, Forensics" },
-    { "name": "Infrastructure", "level": 92, "description": "Linux, Docker, Proxmox, Azure, Windows, Dokploy" },
-    { "name": "Networking", "level": 85, "description": "Fortigate, Mikrotik, Ubiquiti, TCP/IP" }
-  ],
-  "experience": [
-    {
-      "role": "AI Engineer & Automation Specialist",
-      "company": "Empresa de Tecnología (Confidencial)",
-      "period": "2025 - Presente",
-      "description": [
-        "Desarrollo e implementación de Agentes de IA utilizando LLMs y LangChain.",
-        "Automatización de procesos complejos de negocio utilizando n8n y Python scripting.",
-        "Diseño y gestión de bases de datos PostgreSQL y MongoDB para aplicaciones de alto rendimiento.",
-        "Implementación de soluciones RAG para sistemas de conocimiento corporativo.",
-        "Desarrollo impulsado por IA para optimización de código y refactorización."
-      ]
-    },
-    {
-      "role": "Gerente de Sistemas",
-      "company": "David Sartor (Concesionaria Oficial John Deere)",
-      "period": "Dic. 2024 - Sept. 2025",
-      "description": [
-        "Liderazgo de la estrategia de sistemas, infraestructura y ciberseguridad.",
-        "Implementación de IA y automatización con n8n para optimización operativa.",
-        "Gestión de GRC (Gobernanza, Riesgo y Cumplimiento) de TI.",
-        "Gestión de proyectos Office 365, Microsoft 365 y administración SQL."
-      ]
-    },
-    {
-      "role": "Responsable de Sistemas y Ciberseguridad",
-      "company": "David Sartor (John Deere)",
-      "period": "Sept. 2024 - Sept. 2025",
-      "description": [
-        "Implementación del marco de ciberseguridad DSCF de John Deere (+30 controles).",
-        "Gestión de seguridad de infraestructura y prevención de pérdida de datos (DLP).",
-        "Implementación de marcos NIST e ISO 27001.",
-        "Administración de servidores y conectividad para transformación digital."
-      ]
-    },
-    {
-      "role": "Responsable de E-Commerce",
-      "company": "David Sartor (John Deere)",
-      "period": "Mar. 2024 - Dic. 2024",
-      "description": [
-        "Desarrollo de estrategias de comercio electrónico y marketing digital.",
-        "Optimización de plataformas de ventas online y análisis de negocio."
-      ]
-    },
-    {
-      "role": "Mentor",
-      "company": "Informatorio Chaco",
-      "period": "2023 - 2024",
-      "description": [
-        "Mentoría en curso Full Stack Web Development (HTML, CSS, Python, MySQL, Django).",
-        "Soporte técnico y guía profesional para futuros talentos IT."
-      ]
-    },
-    {
-      "role": "Técnico Informático / Profesional Independiente",
-      "company": "OneFix",
-      "period": "Oct. 2018 - Presente",
-      "description": [
-        "Servicios integrales de TI, gestión de redes y seguridad.",
-        "Administración de Office 365, cPanel y hosting.",
-        "Reparación de hardware y recuperación de datos."
-      ]
-    },
-    {
-      "role": "Profesor de Informática",
-      "company": "Ministerio de Educación de la Nación",
-      "period": "2010 - 2018",
-      "description": "Docente de Informática, Tecnología y Programación en escuelas primarias y secundarias."
-    },
-    {
-      "role": "Administrador de Redes",
-      "company": "INET - Conectar Igualdad",
-      "period": "2010 - 2016",
-      "description": "Administración de servidores Ubuntu Server y certificados de seguridad. Soporte técnico y gestión de redes educativas."
-    }
-  ],
-  "education": [
-    {
-      "degree": "Desarrollador Web Full Stack",
-      "institution": "Informatorio Chaco (UTN FRRe / Polo IT)",
-      "period": "2022"
-    },
-    {
-      "degree": "Analista en Sistemas de Computación",
-      "institution": "Instituto Superior Educativo Computacional N° 59",
-      "period": "2008 - 2010"
-    },
-    {
-      "degree": "Técnico en Montajes y Administración de Redes",
-      "institution": "Red Educativa",
-      "period": "2011"
-    },
-    {
-      "degree": "Analista Programador",
-      "institution": "Instituto Superior Educativo Computacional N° 59",
-      "period": "2010"
-    }
-  ],
-  "certifications": [
-    { "name": "Specialized Program: IBM & Darden Digital Strategy", "issuer": "IBM / University of Virginia", "date": "Mar 2025" },
-    { "name": "Data Analytics", "issuer": "Informatorio Chaco", "date": "Nov 2024" },
-    { "name": "Certified Ethical Hacker (CEH)", "issuer": "Cisco Networking Academy", "date": "Oct 2024" },
-    { "name": "Junior Cybersecurity Analyst Career Path", "issuer": "Cisco", "date": "Apr 2024" },
-    { "name": "Cloud Computing", "issuer": "Google Actívate", "date": "Jan 2024" },
-    { "name": "ISC2 Candidate", "issuer": "ISC2", "date": "Jan 2024" },
-    { "name": "Python University - From Zero to Expert", "issuer": "Udemy", "date": "Mar 2023" },
-    { "name": "Offensive Ethical Hacking (Red Team)", "issuer": "Udemy", "date": "Mar 2023" }
-  ],
-  "projects": [
-    {
-      "title": "AI Automation Agent System",
-      "description": "Sistema de agentes autónomos construidos con LangChain y Python para orquestar flujos de trabajo complejos en n8n.",
-      "tech_stack": ["Python", "LangChain", "n8n", "PostgreSQL"]
-    },
-    {
-      "title": "Cybersecurity Compliance Dashboard",
-      "description": "Herramienta de monitoreo para controles DSCF y NIST, integrando alertas de seguridad y estado de infraestructura.",
-      "tech_stack": ["Power BI", "Python", "SQL", "Azure"]
-    },
-    {
-      "title": "E-Commerce Optimization Platform",
-      "description": "Análisis de datos y automatización de marketing para concesionaria John Deere, mejorando conversión digital.",
-      "tech_stack": ["Data Analytics", "Python Pandas", "CRM"]
-    }
-  ]
-}
+  }

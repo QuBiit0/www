@@ -4,6 +4,7 @@ from sqlalchemy import select
 from pydantic import BaseModel
 from database import get_db
 from models import SystemSettings
+from auth_service import get_current_admin
 
 router = APIRouter(prefix="/api/settings", tags=["settings"])
 
@@ -15,7 +16,10 @@ class SettingsSchema(BaseModel):
     temperature: float | None = 0.7
 
 @router.get("/", response_model=SettingsSchema)
-async def get_settings(db: AsyncSession = Depends(get_db)):
+async def get_settings(
+    db: AsyncSession = Depends(get_db),
+    current_admin: str = Depends(get_current_admin)
+):
     result = await db.execute(select(SystemSettings).limit(1))
     settings = result.scalars().first()
     
@@ -31,7 +35,19 @@ async def get_settings(db: AsyncSession = Depends(get_db)):
     return settings
 
 @router.post("/")
-async def update_settings(new_settings: SettingsSchema, db: AsyncSession = Depends(get_db)):
+async def update_settings(
+    new_settings: SettingsSchema,
+    db: AsyncSession = Depends(get_db),
+    current_admin: str = Depends(get_current_admin)
+):
+    # Validate provider
+    valid_providers = ["gemini", "openai", "groq", "custom"]
+    if new_settings.provider not in valid_providers:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid provider. Must be one of: {', '.join(valid_providers)}"
+        )
+    
     result = await db.execute(select(SystemSettings).limit(1))
     settings = result.scalars().first()
     

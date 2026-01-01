@@ -15,6 +15,11 @@ class Settings(BaseSettings):
     # Database Config
     DATABASE_URL: str | None = None
 
+    # Auth Config
+    SECRET_KEY: str = "supersecretkey_change_me_in_prod" # TODO: Change in Production
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 # 24 hours
+
     class Config:
         env_file = ".env"
 
