@@ -311,12 +311,6 @@ const AdminPanel: React.FC = () => {
         }
     };
 
-    // Handle logout
-    const handleLogout = () => {
-        localStorage.removeItem('admin_token');
-        setIsAuthenticated(false);
-    };
-
     // Show login if not authenticated
     if (checkingAuth) {
         return (
