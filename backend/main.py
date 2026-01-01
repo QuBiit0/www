@@ -7,15 +7,32 @@ from database import init_db
 from api_settings import router as settings_router
 from database import get_db, AsyncSessionLocal
 
+# Import all models to register with Base.metadata
+from models import SystemSettings, ChatMessage, PortfolioData, AdminUser, Lead
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup: Create tables
     await init_db()
     
     # Migration: Init Portfolio Data
-    async with AsyncSessionLocal() as session:
-        from portfolio_service import init_portfolio_data
-        await init_portfolio_data(session)
+    try:
+        async with AsyncSessionLocal() as session:
+            from portfolio_service import init_portfolio_data
+            await init_portfolio_data(session)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        print(f"CRITICAL STARTUP ERROR: {e}")
+    
+    # Initialize Admin User
+    try:
+        from init_admin import init_admin_user
+        await init_admin_user()
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        print(f"ADMIN INIT ERROR: {e}")
         
     yield
     # Shutdown
@@ -23,6 +40,12 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Leandro Alvarez Portfolio API", version="2.0.0", lifespan=lifespan)
 
 app.include_router(settings_router)
+
+from api_auth import router as auth_router
+app.include_router(auth_router)
+
+from api_leads import router as leads_router
+app.include_router(leads_router)
 
 # CORS middleware configuration
 app.add_middleware(
@@ -71,10 +94,10 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
         total_msgs = await db.scalar(select(func.count(ChatMessage.id)))
         unique_sessions = await db.scalar(select(func.count(func.distinct(ChatMessage.session_id))))
         
-        # Check LLM connectivity (basic check)
-        from settings import get_settings
-        settings = get_settings()
-        provider = settings.MODEL_PROVIDER
+        # Get current provider from DB (not env vars)
+        result = await db.execute(select(SystemSettings).limit(1))
+        db_settings = result.scalars().first()
+        provider = db_settings.provider if db_settings else "Not configured"
         
         return {
             "total_messages": total_msgs or 0,
@@ -87,7 +110,7 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
             "total_messages": 0,
             "active_sessions": 0,
             "system_status": "Error",
-            "error": str(e)
+            "current_provider": "Unknown"
         }
 
 

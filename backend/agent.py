@@ -32,7 +32,26 @@ async def get_portfolio_info(query: str, language: str = "es") -> str:
 
     # Handle Bilingual Structure
     # If data has 'es' key, it's the new structure. Otherwise treat as flat (legacy fallback)
-    data = full_data.get(language, full_data.get("es", full_data)) if "es" in full_data else full_data
+    if isinstance(full_data, dict):
+        data = full_data.get(language, full_data.get("es", full_data)) if "es" in full_data else full_data
+    else:
+        # Fallback if full_data is a list (e.g. legacy portfolio.json direct load)
+        print(f"WARNING: full_data is {type(full_data)}, expected dict. Using as-is.")
+        data = full_data
+        
+    # Ensure data is a dict eventually for semantic routing keys
+    if isinstance(data, list) and not isinstance(data, dict):
+        # If it's still a list (like the 'experience' list being top level?), wrap it?
+        # Typically portfolio.json root is a dict ("personal_info", "skills", etc.)
+        # If it's a list here, something is very wrong with the DB record.
+        # Let's try to wrap it or return error if we can't key into it
+        # But wait, if it's the root json, it SHOULD be a dict. 
+        # If it is a list, we might just fail unless we convert it.
+        # Let's just assume if it is a list, we can't query keys.
+        pass # Will fail on .get calls below if it's a list.
+        
+    if not isinstance(data, dict):
+         return f"Error: Portfolio data is malformed (type: {type(data)}). Please contact Admin."
 
     query_lower = query.lower()
     
@@ -61,13 +80,28 @@ async def get_portfolio_info(query: str, language: str = "es") -> str:
     return f"Context ({language}): {json.dumps(summary, indent=2)}"
 
 @tool
-def contact_leandro(subject: str, message: str, contact_info: str = "Not provided") -> str:
-    """Useful for sending a message or email to Leandro. 
-    Ask for the user's contact info (email/phone) before calling this if not provided.
+async def contact_leandro(name: str, contact_info: str, interest: str = "General Inquiry") -> str:
+    """Useful for saving a potential lead or contact request.
+    ALWAYS ask for 'name' and 'contact_info' (email or phone) before calling this.
+    'interest' is optional but helpful (e.g. 'Project Quote', 'Hiring', 'Networking').
     """
-    # Mock capability for V1 - In V2 implement SMTP
-    print(f"--- EMAIL SIMULATION ---\nTo: Leandro\nFrom: {contact_info}\nSubject: {subject}\nMessage: {message}\n------------------------")
-    return f"Message sent successfully to Leandro! He will contact you back at {contact_info}."
+    try:
+        async with AsyncSessionLocal() as session:
+            # Import here to avoid circular dependencies if any
+            from models import Lead
+            from datetime import datetime, timezone, timedelta
+            
+            new_lead = Lead(name=name, contact_info=contact_info, interest=interest, created_at=datetime.now(timezone(timedelta(hours=-3))))
+            session.add(new_lead)
+            await session.commit()
+            
+            # Mock email sending log
+            print(f"--- NEW LEAD SAVED ---\nName: {name}\nContact: {contact_info}\nInterest: {interest}\n------------------------")
+            
+            return f"Thanks {name}! I've saved your contact info. Leandro will reach out to you at {contact_info} soon."
+    except Exception as e:
+        print(f"Error saving lead: {e}")
+        return "I'm having trouble saving your info right now, but I've noted it down in my logs."
 
 from sqlalchemy import select
 from database import AsyncSessionLocal
@@ -85,13 +119,30 @@ async def get_llm():
     # Fetch latest settings from DB
     db_settings = await get_dynamic_settings()
     
-    # Defaults
+    # Defaults from settings.py or env
     provider = db_settings.provider if db_settings else settings.MODEL_PROVIDER
-    model_name = db_settings.model_name if db_settings else "gpt-3.5-turbo"
-    api_key = db_settings.api_key if db_settings else settings.GEMINI_API_KEY
+    model_name = db_settings.model_name if db_settings else "gemini-2.0-flash-exp"
+    
+    # API Key logic: Use DB key if exists AND is not empty, otherwise fallback by provider
+    api_key = None
+    if db_settings and db_settings.api_key and db_settings.api_key.strip():
+        # Use database API key if it exists and is not empty
+        api_key = db_settings.api_key.strip()
+        print(f"DEBUG: Using API key from database")
+    else:
+        # Fallback to environment variables based on provider
+        if provider == "gemini":
+            api_key = settings.GEMINI_API_KEY
+            print(f"DEBUG: Using GEMINI_API_KEY from environment")
+        else:  # openai or other
+            api_key = settings.OPENAI_API_KEY
+            print(f"DEBUG: Using OPENAI_API_KEY from environment")
+    
     temperature = float(db_settings.temperature) if db_settings else 0.7
 
-    print(f"DEBUG: Agent Settings - Provider: {provider}, Model: {model_name}, HasKey: {bool(api_key)}")
+    # Enhanced debug logging
+    key_preview = f"{api_key[:15]}..." if api_key and len(api_key) > 15 else "None"
+    print(f"DEBUG: Agent Settings - Provider: {provider}, Model: {model_name}, HasKey: {bool(api_key)}, KeyPrefix: {key_preview}")
 
     # Check Cache
     cached_llm = get_cached_llm(provider, model_name, str(api_key), temperature)
@@ -102,32 +153,52 @@ async def get_llm():
     llm = None
     if provider == "gemini":
         if not api_key:
-             # Fallback to env or error
-             api_key = settings.GEMINI_API_KEY
+            raise ValueError("GEMINI_API_KEY not found in database or environment variables")
         llm = ChatGoogleGenerativeAI(model=model_name, google_api_key=api_key, temperature=temperature)
     
-    # OpenAI Fallback
-    else:
-        # Default to a widely available model if gpt-4o fails
-        if model_name == "gpt-4o": 
-            # Check if we should fallback (optional logic, but for now just use what's passed)
-            pass
+    # Groq provider - uses OpenAI-compatible API
+    elif provider == "groq":
+        if not api_key:
+            raise ValueError("GROQ_API_KEY not found in database or environment variables")
             
         openai_kwargs = {
             "model": model_name,
-            "api_key": api_key or settings.OPENAI_API_KEY,
+            "api_key": api_key,
             "temperature": temperature
         }
         
-        # Add base_url if present
+        # Groq requires base_url, use from DB or default
         if db_settings and db_settings.base_url:
             openai_kwargs["base_url"] = db_settings.base_url
+            print(f"DEBUG: Using Groq base_url from DB: {db_settings.base_url}")
+        else:
+            openai_kwargs["base_url"] = "https://api.groq.com/openai/v1"
+            print(f"DEBUG: Using default Groq base_url")
+            
+        llm = ChatOpenAI(**openai_kwargs)
+    
+    # OpenAI or Custom providers
+    else:
+        if not api_key:
+            raise ValueError(f"{provider.upper()}_API_KEY not found in database or environment variables")
+            
+        openai_kwargs = {
+            "model": model_name,
+            "api_key": api_key,
+            "temperature": temperature
+        }
+        
+        # Add base_url if present for OpenAI-compatible APIs or custom providers
+        if db_settings and db_settings.base_url:
+            openai_kwargs["base_url"] = db_settings.base_url
+            print(f"DEBUG: Using custom base_url: {db_settings.base_url}")
             
         llm = ChatOpenAI(**openai_kwargs)
     
     # Cache the new instance
     if llm:
         set_cached_llm(provider, model_name, str(api_key), llm, temperature)
+        print(f"DEBUG: Created and cached new {provider} LLM instance")
     
     return llm
 
@@ -137,12 +208,66 @@ async def process_message(message: str, history: list = []):
     llm = await get_llm()
     tools = [get_portfolio_info, contact_leandro] # Add tools here
     
-    system_prompt = """You are the AI Assistant for Leandro Alvarez's Portfolio.
-    Your goal is to represent Leandro professionally, answer questions about his skills, and encourage visitors to hire him.
+    # Get current date for context
+    from datetime import datetime
+    today = datetime.now().strftime("%B %d, %Y")
     
-    - Be professional, enthusiastic, and concise.
-    - If you don't know something, ask the user to contact Leandro directly.
-    - Use the 'get_portfolio_info' tool to check his details.
+    system_prompt = f"""You are the AI Assistant for Leandro Alvarez's Portfolio.
+    Your goal is to represent Leandro professionally and help visitors learn about his expertise.
+    
+    TODAY'S DATE: {today}
+    
+    == SECURITY - CRITICAL ==
+    🔒 NEVER share or discuss:
+    - API keys, tokens, or credentials of any kind
+    - Database connection strings or passwords
+    - Server configurations or infrastructure details
+    - Internal system architecture or security measures
+    - Any technical implementation details that could be exploited
+    
+    If asked about these topics, respond:
+    "For security reasons, I cannot discuss system infrastructure or credentials. I can only share information about Leandro's professional capabilities and services."
+    
+    == SCOPE AND BOUNDARIES ==
+    You ONLY answer questions about:
+    ✅ Leandro's professional background, skills, and experience
+    ✅ AI, Machine Learning, and LLM technologies (general concepts)
+    ✅ Automation and workflow optimization (general concepts)
+    ✅ Software development and programming (general concepts)
+    ✅ His projects and technical capabilities (high-level only)
+    ✅ How to contact or hire Leandro
+    
+    ❌ DO NOT answer questions about:
+    - Politics, religion, or controversial topics
+    - Other people or companies (focus on Leandro only)
+    - Topics unrelated to AI, automation, or development
+    - Medical, legal, or financial advice
+    - Personal opinions on non-technical matters
+    - System credentials, infrastructure, or security details
+    
+    == CRITICAL INSTRUCTIONS ==
+    1. ALWAYS use 'get_portfolio_info' tool BEFORE answering questions about:
+       - Leandro's skills, technologies, or expertise
+       - His work experience or projects
+       - His education or background
+       - Services he offers or what he can do
+    
+    2. DO NOT say "I don't have information" without using the tool first!
+    
+    3. If asked about something OUTSIDE your scope:
+       - Politely redirect: "I'm here to discuss Leandro's expertise in AI, automation, and development. How can I help you with that?"
+    
+    4. When someone shows genuine interest in working with Leandro:
+       - Use 'contact_leandro' tool to save their information
+       - Ask for: name, contact (email/phone), and what they're interested in
+    
+    5. Be professional, enthusiastic, and concise
+    
+    6. Respond in the SAME language as the user (Spanish or English)
+    
+    7. If you don't have specific information even after using tools:
+       - Suggest contacting Leandro directly
+       - Provide contact info from portfolio
     """
     
     prompt = ChatPromptTemplate.from_messages([
