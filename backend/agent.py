@@ -236,9 +236,20 @@ If asked about something unrelated to Leandro's work, politely redirect to his e
         MessagesPlaceholder(variable_name="agent_scratchpad"),
     ])
     
-    # CRITICAL FIX: Groq requires explicit tool binding
-    # Without this, Groq rejects tool calls with: "tool not in request.tools"
-    llm_with_tools = llm.bind_tools(tools)
+    # CRITICAL: Groq requires explicit tool binding, but Gemini breaks with it
+    # Get provider from settings to determine if bind_tools is needed
+    async with AsyncSessionLocal() as db_session:
+        from sqlalchemy import select
+        from models import SystemSettings
+        result = await db_session.execute(select(SystemSettings).order_by(SystemSettings.id.desc()).limit(1))
+        db_settings = result.scalars().first()
+        provider = db_settings.provider if db_settings else "gemini"
+    
+    # Only bind tools for Groq
+    if provider == "groq":
+        llm_with_tools = llm.bind_tools(tools)
+    else:
+        llm_with_tools = llm  # Gemini and OpenAI handle tools natively
     
     agent = create_openai_tools_agent(llm_with_tools, tools, prompt)
     agent_executor = AgentExecutor(
