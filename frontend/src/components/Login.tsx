@@ -106,10 +106,9 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                     </button>
                 </form>
 
-                {/* Footer Info */}
+                {/* Security Notice */}
                 <div className="mt-8 text-center text-sm text-slate-500">
-                    <p>Default: admin / admin123</p>
-                    <p className="mt-1 text-xs text-slate-600">Change password after first login</p>
+                    <p className="text-xs text-slate-600">Secure access required</p>
                 </div>
             </div>
 
